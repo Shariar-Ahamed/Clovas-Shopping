@@ -413,6 +413,10 @@ const clovasApi = {
         filtered = filtered.filter(p => p.category === params.category);
       }
 
+      if (params.subCategory && params.subCategory !== 'All') {
+        filtered = filtered.filter(p => p.subCategory === params.subCategory);
+      }
+
       if (params.minPrice) {
         filtered = filtered.filter(p => p.price >= Number(params.minPrice));
       }

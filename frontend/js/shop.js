@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const filterSearch = document.getElementById('filter-search');
   const filterGender = document.getElementById('filter-gender');
+  const filterSubcategory = document.getElementById('filter-subcategory');
   const filterMinPrice = document.getElementById('filter-min-price');
   const filterMaxPrice = document.getElementById('filter-max-price');
   
@@ -23,6 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (urlParams.has('gender')) {
       filterGender.value = urlParams.get('gender');
+    }
+    if (urlParams.has('subCategory')) {
+      filterSubcategory.value = urlParams.get('subCategory');
     }
     if (urlParams.has('search')) {
       filterSearch.value = urlParams.get('search');
@@ -51,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (filterGender.value && filterGender.value !== 'All') {
       filters.gender = filterGender.value;
+    }
+
+    if (filterSubcategory.value && filterSubcategory.value !== 'All') {
+      filters.subCategory = filterSubcategory.value;
     }
 
     // Accumulate checked categories
@@ -252,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     filterSearch.value = '';
     filterGender.value = 'All';
+    filterSubcategory.value = 'All';
     filterMinPrice.value = '';
     filterMaxPrice.value = '';
     
