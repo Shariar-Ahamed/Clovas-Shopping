@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clovas Shopping - Premium Fashion & Trusted Store</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f7ff',
+              100: '#ebf0ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- Shared Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Banner Slider -->
+  <section class="relative h-[650px] overflow-hidden bg-slate-900">
+    <div id="hero-slider" class="relative w-full h-full flex transition-transform duration-700 ease-in-out">
+      <!-- Slide 1 -->
+      <div class="min-w-full h-full relative flex items-center">
+        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80" alt="New Arrival Fashion" class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 text-white flex flex-col gap-5">
+          <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold text-xs tracking-wider uppercase border border-emerald-500/30 w-fit animate-float">Summer Collection 2026</span>
+          <h1 class="font-serif text-5xl md:text-7xl font-bold tracking-tight max-w-2xl leading-none animate-fade-in">Redefining Premium <br><span class="text-emerald-400">Streetwear</span></h1>
+          <p class="text-lg text-slate-350 max-w-lg font-sans leading-relaxed animate-fade-in" style="animation-delay: 200ms;">Discover our new arrivals curated with premium materials for maximum comfort and unparalleled aesthetics.</p>
+          <a href="shop.html" class="px-8 py-4 bg-white text-slate-950 font-bold rounded-xl hover:bg-slate-100 shadow-lg hover:shadow-xl transition-all w-fit animate-scale-up" style="animation-delay: 400ms;">Explore Collection</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flash Sale Timer Section -->
+  <section class="py-12 bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-inner">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20">
+          <svg class="h-8 w-8 text-amber-300 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold tracking-tight">Flash Sale Live!</h3>
+          <p class="text-sm text-red-100 font-sans mt-0.5">Premium outfits at unbelievable flat discounts.</p>
+        </div>
+      </div>
+      <!-- Countdown -->
+      <div class="flex items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span id="timer-hours" class="h-14 w-14 rounded-2xl bg-white text-red-600 font-bold text-xl flex items-center justify-center shadow-lg">05</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-red-100 mt-1">Hours</span>
+        </div>
+        <span class="text-2xl font-bold">:</span>
+        <div class="flex flex-col items-center">
+          <span id="timer-mins" class="h-14 w-14 rounded-2xl bg-white text-red-600 font-bold text-xl flex items-center justify-center shadow-lg">42</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-red-100 mt-1">Mins</span>
+        </div>
+        <span class="text-2xl font-bold">:</span>
+        <div class="flex flex-col items-center">
+          <span id="timer-secs" class="h-14 w-14 rounded-2xl bg-white text-red-600 font-bold text-xl flex items-center justify-center shadow-lg">09</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-red-100 mt-1">Secs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800 dark:text-white">Shop by Gender</h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-sans">Curated premium collections matching your lifestyle</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Men -->
+      <a href="shop.html?gender=Men" class="group relative h-[380px] rounded-3xl overflow-hidden shadow-md hover-card-trigger animate-fade-in" style="animation-delay: 100ms;">
+        <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" alt="Men collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+        <div class="absolute bottom-6 left-6 text-white">
+          <h3 class="font-serif text-2xl font-bold">Men's Premium</h3>
+          <p class="text-xs text-slate-300 font-sans mt-1 group-hover:underline">Browse Shirts, Polo, Watches & Shoes &rarr;</p>
+        </div>
+      </a>
+      <!-- Women -->
+      <a href="shop.html?gender=Women" class="group relative h-[380px] rounded-3xl overflow-hidden shadow-md hover-card-trigger animate-fade-in" style="animation-delay: 200ms;">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" alt="Women collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+        <div class="absolute bottom-6 left-6 text-white">
+          <h3 class="font-serif text-2xl font-bold">Women's Collection</h3>
+          <p class="text-xs text-slate-300 font-sans mt-1 group-hover:underline">Browse Dresses, Kurtis, Cosmetics & Heels &rarr;</p>
+        </div>
+      </a>
+      <!-- Accessories -->
+      <a href="shop.html?gender=Accessories" class="group relative h-[380px] rounded-3xl overflow-hidden shadow-md hover-card-trigger animate-fade-in" style="animation-delay: 300ms;">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Accessories collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+        <div class="absolute bottom-6 left-6 text-white">
+          <h3 class="font-serif text-2xl font-bold">Accessories</h3>
+          <p class="text-xs text-slate-300 font-sans mt-1 group-hover:underline">Browse Watches, Wallets & Backpacks &rarr;</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="py-20 bg-slate-100 dark:bg-slate-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800 dark:text-white">Featured Selections</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-sans">Our signature products handpicked for quality</p>
+        </div>
+        <a href="shop.html" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">View All Products &rarr;</a>
+      </div>
+      <!-- Grid -->
+      <div id="featured-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <!-- Loader Skeletons (replaced by JS) -->
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promotion Split Banner Section -->
+  <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Banner 1 -->
+      <div class="relative rounded-3xl overflow-hidden h-[260px] shadow-lg flex items-center p-8 bg-slate-900 group border border-slate-800 animate-fade-in" style="animation-delay: 100ms;">
+        <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-500" alt="Promo watches">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent"></div>
+        <div class="relative z-10 text-white flex flex-col gap-3 max-w-xs">
+          <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Limited Drop</span>
+          <h3 class="font-serif text-2xl font-bold">Luxury Chrono Collection</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Save up to 20% on our premium hand-finished Italian leather timepieces.</p>
+          <a href="shop.html?gender=Accessories" class="text-xs font-bold text-white hover:underline mt-1">Shop Collection &rarr;</a>
+        </div>
+      </div>
+      <!-- Banner 2 -->
+      <div class="relative rounded-3xl overflow-hidden h-[260px] shadow-lg flex items-center p-8 bg-slate-900 group border border-slate-800 animate-fade-in" style="animation-delay: 200ms;">
+        <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:scale-105 transition-transform duration-500" alt="Promo shirts">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent"></div>
+        <div class="relative z-10 text-white flex flex-col gap-3 max-w-xs">
+          <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Exclusive Promo</span>
+          <h3 class="font-serif text-2xl font-bold">Linen Shirts Campaign</h3>
+          <p class="text-xs text-slate-350 leading-relaxed">Apply coupon <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold">SUMMER30</span> at checkout for discount.</p>
+          <a href="shop.html?gender=Men" class="text-xs font-bold text-white hover:underline mt-1">Shop Linen Shirts &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Best Sellers Grid -->
+  <section class="py-20 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-850/50 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800 dark:text-white">Best Sellers</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-sans">Our most popular wardrobe selections of this season</p>
+        </div>
+      </div>
+      <!-- Grid -->
+      <div id="bestsellers-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+        <div class="shimmer h-[380px] rounded-3xl"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews Testimonial Section -->
+  <section class="py-20 bg-slate-100 dark:bg-slate-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800 dark:text-white">Customer Voices</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-sans">Read verified testimonials directly from our styling community</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Review 1 -->
+        <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col justify-between gap-6 shadow-sm hover:shadow transition-shadow">
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 italic">"The linen shirt is of exceptional quality! The sizing was exactly as described, and it feels incredibly premium. Shipping in Dhaka took only 24 hours. Will buy again!"</p>
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-primary-600 text-white font-bold text-sm flex items-center justify-center">S</div>
+            <div>
+              <h5 class="text-xs font-bold">Saadman Sakib</h5>
+              <span class="text-[10px] text-slate-400">Verified Purchase</span>
+            </div>
+          </div>
+        </div>
+        <!-- Review 2 -->
+        <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col justify-between gap-6 shadow-sm hover:shadow transition-shadow">
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 italic">"I bought the Chronograph watch as a gift. The presentation case and materials feel extremely luxurious. The dial reflections under light look premium."</p>
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">T</div>
+            <div>
+              <h5 class="text-xs font-bold">Tahseen Rahman</h5>
+              <span class="text-[10px] text-slate-400">Verified Purchase</span>
+            </div>
+          </div>
+        </div>
+        <!-- Review 3 -->
+        <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col justify-between gap-6 shadow-sm hover:shadow transition-shadow">
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 italic">"Loved the kurti design. Fits beautifully and the georgette material feels soft. Perfect editorial look for evening setups. 10/10 recommendation!"</p>
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-purple-600 text-white font-bold text-sm flex items-center justify-center">F</div>
+            <div>
+              <h5 class="text-xs font-bold">Farzana Chowdhury</h5>
+              <span class="text-[10px] text-slate-400">Verified Purchase</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brand Trust Stats -->
+  <section class="py-20 border-t border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+        <span class="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-4"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
+        <h4 class="font-serif text-lg font-bold text-slate-800 dark:text-white">Secure Payments</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">100% encrypted checkout with SSLCommerz</p>
+      </div>
+      <div class="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+        <span class="h-12 w-12 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 mb-4"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg></span>
+        <h4 class="font-serif text-lg font-bold text-slate-800 dark:text-white">Premium Quality</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Sourced globally from authorized stores</p>
+      </div>
+      <div class="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+        <span class="h-12 w-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+        <h4 class="font-serif text-lg font-bold text-slate-800 dark:text-white">Fast Home Delivery</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Delivered to your doorstep within 24-72 hours</p>
+      </div>
+      <div class="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/50">
+        <span class="h-12 w-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.2M4 9h.01M4 9a9 9 0 019-9h.01c.01 0 .02.01.03.01H12"/></svg></span>
+        <h4 class="font-serif text-lg font-bold text-slate-800 dark:text-white">7-Day Easy Returns</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">No questions asked refund/exchange policy</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Script Modules -->
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/main.js"></script>
+  
+  <!-- Home Page Script -->
+  <script type="module">
+    import clovasApi from './js/api.js';
+    import { addToCart, toggleWishlist, getWishlist } from './js/main.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Countdown Timer
+      let totalSeconds = 5 * 3600 + 42 * 60 + 9;
+      const hoursEl = document.getElementById('timer-hours');
+      const minsEl = document.getElementById('timer-mins');
+      const secsEl = document.getElementById('timer-secs');
+
+      const timerInterval = setInterval(() => {
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+          return;
+        }
+        totalSeconds--;
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        
+        hoursEl.textContent = String(h).padStart(2, '0');
+        minsEl.textContent = String(m).padStart(2, '0');
+        secsEl.textContent = String(s).padStart(2, '0');
+      }, 1000);
+
+      // Load Featured Products
+      const productsGrid = document.getElementById('featured-products-grid');
+      const bestSellersGrid = document.getElementById('bestsellers-products-grid');
+
+      const renderGrid = (list, gridEl) => {
+        if (!gridEl) return;
+        if (list.length === 0) {
+          gridEl.innerHTML = `
+            <div class="col-span-full py-12 text-center text-slate-550 dark:text-slate-400 font-medium">
+              No products found in this section.
+            </div>
+          `;
+          return;
+        }
+
+        gridEl.innerHTML = '';
+        const wishlist = getWishlist();
+
+        list.forEach(prod => {
+          const hasDiscount = prod.discountPrice && prod.discountPrice > 0;
+          const priceHtml = hasDiscount 
+            ? `<span class="font-bold text-slate-800 dark:text-white">${prod.discountPrice} BDT</span>
+               <span class="text-xs text-slate-400 line-through ml-2">${prod.price} BDT</span>`
+            : `<span class="font-bold text-slate-800 dark:text-white">${prod.price} BDT</span>`;
+
+          const isWishlisted = wishlist.some(item => item._id === prod._id);
+
+          const card = document.createElement('div');
+          card.className = 'group flex flex-col bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/40 overflow-hidden hover-card-trigger animate-fade-in relative';
+          card.innerHTML = `
+            <!-- Image -->
+            <div class="h-64 overflow-hidden relative">
+              <a href="product.html?id=${prod._id}">
+                <img src="${prod.images[0]}" alt="${prod.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              </a>
+              <!-- Wishlist Toggle -->
+              <button class="wishlist-btn absolute top-4 right-4 h-10 w-10 rounded-xl glass flex items-center justify-center text-slate-700 dark:text-slate-350 hover:text-red-500 transition-colors" data-id="${prod._id}">
+                <svg class="h-5 w-5 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+              </button>
+              ${hasDiscount ? `
+                <span class="absolute top-4 left-4 px-2.5 py-1 text-[10px] font-bold text-white bg-red-500 rounded-lg">SALE</span>
+              ` : ''}
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-primary-500 uppercase tracking-widest block mb-1">${prod.category} • ${prod.subCategory}</span>
+                <a href="product.html?id=${prod._id}">
+                  <h3 class="font-serif text-lg font-bold text-slate-800 dark:text-white leading-snug hover:text-primary-600 dark:hover:text-primary-400 transition-colors line-clamp-1">${prod.title}</h3>
+                </a>
+                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 leading-relaxed">${prod.description}</p>
+              </div>
+              
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/40">
+                <div class="flex flex-col">
+                  ${priceHtml}
+                </div>
+                
+                <button class="add-to-cart-btn h-11 w-11 rounded-xl bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 shadow-md transition-colors" data-id="${prod._id}">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </button>
+              </div>
+            </div>
+          `;
+
+          // Wire up card buttons
+          card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            addToCart(prod, 1);
+          });
+
+          card.querySelector('.wishlist-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const isAdded = toggleWishlist(prod);
+            const svg = e.currentTarget.querySelector('svg');
+            if (isAdded) {
+              svg.classList.add('fill-red-500', 'text-red-500');
+            } else {
+              svg.classList.remove('fill-red-500', 'text-red-500');
+            }
+          });
+
+          gridEl.appendChild(card);
+        });
+      };
+
+      clovasApi.getProductHighlights()
+        .then(data => {
+          renderGrid(data.featured || [], productsGrid);
+          renderGrid(data.bestSellers || [], bestSellersGrid);
+        })
+        .catch(err => {
+          console.error(err);
+          productsGrid.innerHTML = `
+            <div class="col-span-full py-12 text-center text-slate-550 dark:text-slate-400 font-medium">
+              Could not load products. Please make sure the backend server is running on port 5000.
+            </div>
+          `;
+          if (bestSellersGrid) {
+            bestSellersGrid.innerHTML = `
+              <div class="col-span-full py-12 text-center text-slate-550 dark:text-slate-400 font-medium">
+                Could not load products.
+              </div>
+            `;
+          }
+        });
+    });
+  </script>
+</body>
+</html>

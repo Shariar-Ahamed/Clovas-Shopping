@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Clovas Shopping</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f7ff',
+              100: '#ebf0ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex">
+
+  <!-- Left Sidebar Panel Navigator -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between p-6">
+    <div class="flex flex-col gap-8">
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <span class="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg">C</span>
+        <span class="font-serif text-lg font-bold text-white tracking-wide">Clovas Admin</span>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex flex-col gap-2">
+        <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary-600 text-white font-semibold text-xs shadow-md transition-all">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zm10 0a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"/></svg>
+          Overview
+        </a>
+        <a href="products.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white font-semibold text-xs transition-all">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          Manage Products
+        </a>
+        <a href="orders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white font-semibold text-xs transition-all">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          Manage Orders
+        </a>
+        <a href="coupons.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white font-semibold text-xs transition-all">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+          Coupons Management
+        </a>
+      </nav>
+    </div>
+
+    <!-- Exit to Client Shop -->
+    <a href="../index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-950/20 hover:text-red-400 font-semibold text-xs transition-all border border-slate-800">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Exit Dashboard
+    </a>
+  </aside>
+
+  <!-- Main Content Body -->
+  <main class="flex-grow p-10 max-h-screen overflow-y-auto">
+    <!-- Header -->
+    <header class="flex justify-between items-center pb-6 border-b border-slate-200 dark:border-slate-800 mb-8">
+      <div>
+        <h1 class="font-serif text-2xl md:text-3xl font-bold">Analytics Overview</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time statistics on orders, sales revenue, and stock count</p>
+      </div>
+    </header>
+
+    <!-- Stats Cards Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-10">
+      <!-- Total Sales -->
+      <div class="glass p-6 rounded-2xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between gap-4">
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Sales BDT</p>
+          <h2 class="text-2xl font-extrabold mt-1" id="stat-sales">0</h2>
+        </div>
+        <span class="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M12 16v1m-3.921-2.91L5 8m0 0l3.921-2.91M5 8h12"/></svg></span>
+      </div>
+
+      <!-- Total Orders -->
+      <div class="glass p-6 rounded-2xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between gap-4">
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Orders</p>
+          <h2 class="text-2xl font-extrabold mt-1" id="stat-orders">0</h2>
+        </div>
+        <span class="h-12 w-12 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg></span>
+      </div>
+
+      <!-- Active Products -->
+      <div class="glass p-6 rounded-2xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between gap-4">
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Products</p>
+          <h2 class="text-2xl font-extrabold mt-1" id="stat-products">0</h2>
+        </div>
+        <span class="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></span>
+      </div>
+
+      <!-- Total Users -->
+      <div class="glass p-6 rounded-2xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between gap-4">
+        <div>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Registered Shoppers</p>
+          <h2 class="text-2xl font-extrabold mt-1" id="stat-users">0</h2>
+        </div>
+        <span class="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></span>
+      </div>
+    </section>
+
+    <!-- Detailed Section (Recent Orders & Breakdown) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Recent Orders List -->
+      <section class="lg:col-span-2 glass p-6 rounded-3xl border border-slate-100 dark:border-slate-800/40">
+        <h3 class="font-serif text-lg font-bold border-b border-slate-150 dark:border-slate-800 pb-3 mb-5">Recent Placed Orders</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-medium">
+            <thead>
+              <tr class="text-slate-400 uppercase tracking-wider border-b border-slate-150 dark:border-slate-850">
+                <th class="pb-3">Recipient</th>
+                <th class="pb-3">Transaction</th>
+                <th class="pb-3">Date</th>
+                <th class="pb-3">Total Amount</th>
+                <th class="pb-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-orders-rows">
+              <!-- Loaded by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Category Breakdown stats -->
+      <section class="glass p-6 rounded-3xl border border-slate-100 dark:border-slate-800/40">
+        <h3 class="font-serif text-lg font-bold border-b border-slate-150 dark:border-slate-800 pb-3 mb-5">Sales by Main Category</h3>
+        
+        <div class="space-y-4" id="category-breakdown-list">
+          <!-- Loaded by JS -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script type="module" src="../js/firebase-config.js"></script>
+  <script type="module" src="../js/api.js"></script>
+  <script type="module" src="../js/admin.js"></script>
+  <script type="module">
+    import clovasApi from '../js/api.js';
+    import { initAdminDashboard } from '../js/admin.js';
+    document.addEventListener('DOMContentLoaded', initAdminDashboard);
+  </script>
+</body>
+</html>

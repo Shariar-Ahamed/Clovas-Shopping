@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Our Story - Clovas Shopping</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f7ff',
+              100: '#ebf0ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <!-- Page Banner -->
+  <section class="bg-slate-100 dark:bg-slate-900 py-16 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <span class="text-[10px] font-bold tracking-widest text-primary-500 uppercase block mb-2">Our Heritage</span>
+      <h1 class="font-serif text-4xl md:text-5xl font-bold">About Clovas Shopping</h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-lg mx-auto leading-relaxed">Discover our journey of crafting premium fabric selections, luxury watches, and styling accessories since 2020.</p>
+    </div>
+  </section>
+
+  <!-- Detailed Story Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col gap-24">
+    
+    <!-- Section 1: The Vision -->
+    <div class="flex flex-col md:flex-row items-center gap-12 animate-fade-in">
+      <div class="w-full md:w-1/2 flex flex-col gap-5">
+        <h2 class="font-serif text-3xl font-bold">Crafting Timeless Style With Comfort</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-sans">At Clovas Shopping, we believe fashion is more than just clothing—it's a statement of identity, values, and grace. Our collections are designed for individuals who appreciate premium quality fabrics, tailored structures, and minimalistic details.</p>
+        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-sans">Every single shirt, gown, and accessory in our catalog undergoes multiple quality inspection checkups, ensuring that you receive nothing short of international boutique standards.</p>
+      </div>
+      <div class="w-full md:w-1/2 h-[350px] rounded-3xl overflow-hidden shadow-lg">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Our showroom selection">
+      </div>
+    </div>
+
+    <!-- Section 2: Values Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <span class="h-10 w-10 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg></span>
+        <h3 class="font-serif text-lg font-bold">Ethical Sourcing</h3>
+        <p class="text-xs text-slate-550 dark:text-slate-400 leading-relaxed">We source all our raw organic cotton, linen yarns, and premium calfskin leather from certified sustainable growers globally.</p>
+      </div>
+      <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <span class="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
+        <h3 class="font-serif text-lg font-bold">Trusted Quality</h3>
+        <p class="text-xs text-slate-550 dark:text-slate-400 leading-relaxed">Our hand-finished detailing ensures zero-defect styling, providing you with wardrobe durability that lasts for seasons.</p>
+      </div>
+      <div class="glass p-8 rounded-3xl border border-slate-100 dark:border-slate-800/40 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <span class="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
+        <h3 class="font-serif text-lg font-bold">Express Logistics</h3>
+        <p class="text-xs text-slate-550 dark:text-slate-400 leading-relaxed">We provide specialized packaging and express courier delivery services to ensure safe transport straight to your door.</p>
+      </div>
+    </div>
+
+    <!-- Section 3: The Founders / Team -->
+    <div class="border-t border-slate-200 dark:border-slate-800 pt-16 flex flex-col gap-10">
+      <div class="text-center max-w-md mx-auto">
+        <h2 class="font-serif text-3xl font-bold">Met the Creative Team</h2>
+        <p class="text-xs text-slate-500 mt-2">The minds behind curating premium aesthetic wardrobes</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <!-- Team 1 -->
+        <div class="text-center flex flex-col items-center">
+          <div class="h-44 w-44 rounded-full overflow-hidden mb-4 shadow border border-slate-150 dark:border-slate-800 bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
+          </div>
+          <h4 class="font-bold text-sm">Arifeen Nabil</h4>
+          <p class="text-[10px] text-slate-450 uppercase tracking-widest mt-1">Founder & CEO</p>
+        </div>
+        <!-- Team 2 -->
+        <div class="text-center flex flex-col items-center">
+          <div class="h-44 w-44 rounded-full overflow-hidden mb-4 shadow border border-slate-150 dark:border-slate-800 bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
+          </div>
+          <h4 class="font-bold text-sm">Nusrat Jahan</h4>
+          <p class="text-[10px] text-slate-455 uppercase tracking-widest mt-1">Head Stylist</p>
+        </div>
+        <!-- Team 3 -->
+        <div class="text-center flex flex-col items-center">
+          <div class="h-44 w-44 rounded-full overflow-hidden mb-4 shadow border border-slate-150 dark:border-slate-800 bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
+          </div>
+          <h4 class="font-bold text-sm">Zamil Ahmed</h4>
+          <p class="text-[10px] text-slate-450 uppercase tracking-widest mt-1">Creative Director</p>
+        </div>
+        <!-- Team 4 -->
+        <div class="text-center flex flex-col items-center">
+          <div class="h-44 w-44 rounded-full overflow-hidden mb-4 shadow border border-slate-150 dark:border-slate-800 bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
+          </div>
+          <h4 class="font-bold text-sm">Saima Karim</h4>
+          <p class="text-[10px] text-slate-450 uppercase tracking-widest mt-1">Operations Lead</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Clovas Shopping</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f7ff',
+              100: '#ebf0ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <!-- Main Product Detail -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="glass p-8 md:p-12 rounded-3xl shadow-xl flex flex-col md:flex-row gap-12 border border-slate-100 dark:border-slate-850/50 animate-scale-up">
+      
+      <!-- Product Gallery -->
+      <div class="w-full md:w-1/2 flex flex-col gap-4 animate-slide-left">
+        <div class="h-[450px] w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-150 dark:border-slate-800">
+          <img id="main-product-img" src="" alt="" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+        </div>
+        <!-- Thumbnails -->
+        <div id="product-thumbnails" class="flex gap-4 overflow-x-auto pb-2">
+          <!-- Thumbnails loaded by JS -->
+        </div>
+      </div>
+
+      <!-- Product Meta Content -->
+      <div class="w-full md:w-1/2 flex flex-col justify-between animate-slide-right">
+        <div>
+          <!-- Categories & Badge -->
+          <div class="flex items-center gap-3 mb-4">
+            <span id="product-category" class="text-xs font-bold uppercase tracking-wider text-primary-500 bg-primary-50 dark:bg-primary-950/30 px-3 py-1.5 rounded-lg">Category</span>
+            <span id="stock-badge" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-450 border border-emerald-100 dark:border-emerald-900/30">In Stock</span>
+          </div>
+
+          <h1 id="product-title" class="font-serif text-3xl md:text-4xl font-bold leading-tight mb-2">Product Title</h1>
+          
+          <!-- Rating -->
+          <div class="flex items-center gap-2 mb-6">
+            <div class="flex text-amber-400" id="rating-stars">
+              <!-- Injected by JS -->
+            </div>
+            <span class="text-sm font-semibold" id="rating-value">0.0</span>
+            <span class="text-xs text-slate-450 dark:text-slate-500">|</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 hover:underline cursor-pointer" id="goto-reviews"><span id="reviews-count">0</span> Reviews</span>
+          </div>
+
+          <!-- Price -->
+          <div class="mb-8 pb-6 border-b border-slate-150 dark:border-slate-800">
+            <div class="flex items-baseline gap-3">
+              <span id="product-price" class="text-3xl font-extrabold text-slate-900 dark:text-white">0 BDT</span>
+              <span id="product-old-price" class="text-lg text-slate-450 line-through hidden">0 BDT</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-8">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Description</h4>
+            <p id="product-desc" class="text-sm leading-relaxed text-slate-655 dark:text-slate-400">Loading details...</p>
+          </div>
+        </div>
+
+        <!-- Purchase Actions -->
+        <div class="flex flex-col gap-4 mt-8 pt-6 border-t border-slate-150 dark:border-slate-800">
+          <div class="flex items-center gap-4">
+            <!-- Qty Counter -->
+            <div class="flex items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden h-14 w-32">
+              <button id="qty-dec" class="w-10 h-full flex items-center justify-center font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">-</button>
+              <input type="number" id="qty-input" value="1" min="1" class="w-12 h-full text-center font-bold text-sm bg-transparent border-none focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+              <button id="qty-inc" class="w-10 h-full flex items-center justify-center font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">+</button>
+            </div>
+
+            <!-- Add to Cart -->
+            <button id="add-to-cart-btn" class="flex-grow h-14 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 shadow-md transition-colors flex items-center justify-center gap-2">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              Add to Bag
+            </button>
+
+            <!-- Wishlist Toggle -->
+            <button id="detail-wishlist-btn" class="h-14 w-14 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-red-500 dark:hover:border-red-500 flex items-center justify-center text-slate-550 dark:text-slate-400 hover:text-red-500 transition-all">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <section class="py-16 mt-8">
+      <h2 class="font-serif text-2xl font-bold mb-8">You May Also Like</h2>
+      <div id="related-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <!-- Loaded by JS -->
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews-section" class="py-16 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex flex-col lg:flex-row gap-12">
+        
+        <!-- Review Feed -->
+        <div class="w-full lg:w-3/5">
+          <h2 class="font-serif text-2xl font-bold mb-8">Customer Reviews</h2>
+          <div id="reviews-list" class="space-y-6">
+            <!-- Reviews Injected -->
+          </div>
+        </div>
+
+        <!-- Submit Review Form -->
+        <div class="w-full lg:w-2/5">
+          <div class="glass p-6 rounded-3xl border border-slate-100 dark:border-slate-800/40 sticky top-28">
+            <h3 class="font-serif text-xl font-bold mb-6">Write a Review</h3>
+            
+            <form id="review-form" class="space-y-5">
+              <!-- Rating Selector -->
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Rating</label>
+                <div class="flex gap-2 text-2xl text-slate-300" id="rating-selector">
+                  <span class="cursor-pointer hover:text-amber-400 transition-colors" data-star="1">&#9733;</span>
+                  <span class="cursor-pointer hover:text-amber-400 transition-colors" data-star="2">&#9733;</span>
+                  <span class="cursor-pointer hover:text-amber-400 transition-colors" data-star="3">&#9733;</span>
+                  <span class="cursor-pointer hover:text-amber-400 transition-colors" data-star="4">&#9733;</span>
+                  <span class="cursor-pointer hover:text-amber-400 transition-colors" data-star="5">&#9733;</span>
+                </div>
+                <input type="hidden" id="selected-rating" value="0">
+              </div>
+
+              <!-- Comment -->
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Comments</label>
+                <textarea id="review-comment" required rows="4" placeholder="Share your premium shopping experience with this item..." class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 bg-primary-600 text-white font-bold text-sm rounded-xl hover:bg-primary-700 shadow transition-colors">Post Review</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/product.js"></script>
+</body>
+</html>
