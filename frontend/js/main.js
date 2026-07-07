@@ -210,10 +210,41 @@ const injectHeaderAndFooter = async () => {
               </a>
 
               <!-- Cart -->
-              <a href="cart.html" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative">
+              <a href="cart.html" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative mr-1">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 <span class="cart-count-badge absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary-600 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-900" style="display:none">0</span>
               </a>
+
+              <!-- Notification Bell Dropdown -->
+              <div class="relative inline-block text-left" id="notification-dropdown-wrapper">
+                <button id="notification-bell-btn" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                  <span id="notif-ping" class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                  <span id="notif-dot" class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"></span>
+                </button>
+                <div id="notification-dropdown-menu" class="hidden absolute right-0 mt-3 w-80 glass border border-slate-150 dark:border-slate-850 rounded-2xl shadow-xl z-50 p-4 transition-all duration-300">
+                  <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/40 pb-2 mb-3">
+                    <span class="font-serif text-sm font-bold text-slate-800 dark:text-white">Notifications</span>
+                    <button id="clear-notifications-btn" class="text-[10px] text-primary-500 hover:underline">Mark read</button>
+                  </div>
+                  <div class="space-y-3 max-h-60 overflow-y-auto font-sans" id="notification-list-items">
+                    <div class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-850/50 transition-colors text-[11px] flex gap-2">
+                      <span class="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></span>
+                      <div>
+                        <p class="text-slate-800 dark:text-white font-medium">Welcome to Clovas Shopping!</p>
+                        <span class="text-[9px] text-slate-400 block mt-0.5">Use BDT 300 flat discounts using coupon: SUMMER30</span>
+                      </div>
+                    </div>
+                    <div class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-850/50 transition-colors text-[11px] flex gap-2">
+                      <span class="h-2 w-2 rounded-full bg-emerald-500 flex-shrink-0 mt-1.5"></span>
+                      <div>
+                        <p class="text-slate-800 dark:text-white font-medium">Offline Sandbox Active</p>
+                        <span class="text-[9px] text-slate-400 block mt-0.5">Test fully interactive checkouts and admin dashboard offline.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <!-- Divider -->
               <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
@@ -244,6 +275,38 @@ const injectHeaderAndFooter = async () => {
 
     // Wire up events
     document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
+    
+    // Notification Toggle
+    const bellBtn = document.getElementById('notification-bell-btn');
+    const menuEl = document.getElementById('notification-dropdown-menu');
+    const markReadBtn = document.getElementById('clear-notifications-btn');
+    const pingEl = document.getElementById('notif-ping');
+    const dotEl = document.getElementById('notif-dot');
+
+    if (bellBtn && menuEl) {
+      bellBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menuEl.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (menuEl && !menuEl.contains(e.target) && e.target !== bellBtn) {
+          menuEl.classList.add('hidden');
+        }
+      });
+    }
+
+    if (markReadBtn) {
+      markReadBtn.addEventListener('click', () => {
+        if (pingEl) pingEl.style.display = 'none';
+        if (dotEl) dotEl.style.display = 'none';
+        const list = document.getElementById('notification-list-items');
+        if (list) {
+          list.innerHTML = `<div class="text-[10px] text-center text-slate-400 py-4">No new notifications.</div>`;
+        }
+      });
+    }
+
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async () => {
@@ -309,7 +372,11 @@ const injectHeaderAndFooter = async () => {
           
           <div class="mt-12 pt-8 border-t border-slate-150 dark:border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-sans">
             <p>&copy; 2026 Clovas Shopping. All rights reserved.</p>
-            <p>Designed with premium standards for high performance.</p>
+            <div class="flex gap-4">
+              <a href="privacy.html" class="hover:text-primary-500 transition-colors">Privacy Policy</a>
+              <span>&bull;</span>
+              <a href="terms.html" class="hover:text-primary-500 transition-colors">Terms & Conditions</a>
+            </div>
           </div>
         </div>
       </footer>
