@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Check if specific tab requested in URL
   if (urlParams.has('tab')) {
     switchTab(urlParams.get('tab'));
+  } else {
+    switchTab('profile');
   }
 
   // --- Orders Tab Handler ---
@@ -69,9 +71,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     clovasApi.getMyOrders()
       .then(orders => {
+        // Update stats cards dynamically
+        const totalSpent = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+        const statsOrders = document.getElementById('stats-orders-count');
+        const statsSpent = document.getElementById('stats-total-spent');
+        const statsWish = document.getElementById('stats-wishlist-count');
+        if (statsOrders) statsOrders.textContent = orders.length;
+        if (statsSpent) statsSpent.textContent = `${totalSpent} BDT`;
+        if (statsWish) statsWish.textContent = getWishlist().length;
+
         if (orders.length === 0) {
           ordersListContainer.innerHTML = `
-            <div class="glass p-10 rounded-2xl text-center border border-slate-100 dark:border-slate-800">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] p-10 rounded-2xl text-center">
               <p class="text-sm text-slate-500">You haven't placed any orders yet.</p>
               <a href="shop.html" class="text-xs font-bold text-primary-600 hover:underline mt-2 inline-block">Shop Premium Outfits</a>
             </div>
@@ -90,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const isCancelled = order.orderStatus === 'Cancelled';
 
           const card = document.createElement('div');
-          card.className = 'glass p-6 md:p-8 rounded-2xl border border-slate-100 dark:border-slate-850/45 shadow-sm flex flex-col gap-6 animate-fade-in';
+          card.className = 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.03)] p-6 md:p-8 rounded-2xl flex flex-col gap-6 animate-fade-in';
           card.innerHTML = `
             <!-- Order Header Info -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-150 dark:border-slate-800 pb-4 text-xs font-medium">
@@ -332,6 +343,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       showToast(error.message, 'error');
     }
   });
+
+  // Handle password reset email request
+  const resetEmailBtn = document.getElementById('send-reset-email-btn');
+  if (resetEmailBtn) {
+    resetEmailBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        resetEmailBtn.disabled = true;
+        resetEmailBtn.textContent = 'Sending...';
+        await clovasAuth.resetPassword(user.email);
+        showToast('Password reset link sent to your email.');
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        resetEmailBtn.disabled = false;
+        resetEmailBtn.textContent = 'Send Reset Link';
+      }
+    });
+  }
 
   loadProfile();
 });

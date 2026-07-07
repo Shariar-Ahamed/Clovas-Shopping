@@ -1,6 +1,17 @@
 import clovasApi from './api.js';
 import { addToCart, toggleWishlist, getWishlist } from './main.js';
 
+const getProductColor = (prodId) => {
+  const colors = ['Black', 'White', 'Blue', 'Red', 'Green', 'Brown'];
+  let hash = 0;
+  if (prodId) {
+    for (let i = 0; i < prodId.length; i++) {
+      hash += prodId.charCodeAt(i);
+    }
+  }
+  return colors[hash % colors.length];
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const productsGrid = document.getElementById('shop-products-grid');
   const resultsCount = document.getElementById('results-count');
@@ -12,11 +23,81 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterSubcategory = document.getElementById('filter-subcategory');
   const filterMinPrice = document.getElementById('filter-min-price');
   const filterMaxPrice = document.getElementById('filter-max-price');
-  
+  const filterColor = document.getElementById('filter-color');
+
+  const priceSliderMin = document.getElementById('price-slider-min');
+  const priceSliderMax = document.getElementById('price-slider-max');
+  const priceSliderTrack = document.getElementById('price-slider-track');
+  const maxPriceLimit = 15000;
+
   const applyFiltersBtn = document.getElementById('apply-filters-btn');
   const clearFiltersBtn = document.getElementById('clear-filters');
 
   let currentPage = 1;
+
+  // Dual price range slider synchronization
+  const updateSliderTrack = () => {
+    const minVal = parseInt(priceSliderMin.value);
+    const maxVal = parseInt(priceSliderMax.value);
+    
+    const leftPercent = (minVal / maxPriceLimit) * 100;
+    const rightPercent = 100 - (maxVal / maxPriceLimit) * 100;
+    
+    priceSliderTrack.style.left = leftPercent + '%';
+    priceSliderTrack.style.right = rightPercent + '%';
+    
+    filterMinPrice.value = minVal;
+    filterMaxPrice.value = maxVal;
+  };
+
+  priceSliderMin.addEventListener('input', () => {
+    let minVal = parseInt(priceSliderMin.value);
+    let maxVal = parseInt(priceSliderMax.value);
+    
+    if (minVal > maxVal) {
+      priceSliderMin.value = maxVal;
+      minVal = maxVal;
+    }
+    updateSliderTrack();
+  });
+
+  priceSliderMax.addEventListener('input', () => {
+    let minVal = parseInt(priceSliderMin.value);
+    let maxVal = parseInt(priceSliderMax.value);
+    
+    if (maxVal < minVal) {
+      priceSliderMax.value = minVal;
+      maxVal = minVal;
+    }
+    updateSliderTrack();
+  });
+
+  const syncInputsToSliders = () => {
+    let minVal = parseInt(filterMinPrice.value) || 0;
+    let maxVal = parseInt(filterMaxPrice.value) || maxPriceLimit;
+    
+    if (minVal < 0) minVal = 0;
+    if (maxVal > maxPriceLimit) maxVal = maxPriceLimit;
+    if (minVal > maxVal) minVal = maxVal;
+    
+    priceSliderMin.value = minVal;
+    priceSliderMax.value = maxVal;
+    
+    filterMinPrice.value = minVal;
+    filterMaxPrice.value = maxVal;
+    
+    const leftPercent = (minVal / maxPriceLimit) * 100;
+    const rightPercent = 100 - (maxVal / maxPriceLimit) * 100;
+    
+    priceSliderTrack.style.left = leftPercent + '%';
+    priceSliderTrack.style.right = rightPercent + '%';
+  };
+
+  filterMinPrice.addEventListener('change', syncInputsToSliders);
+  filterMaxPrice.addEventListener('change', syncInputsToSliders);
+
+  // Initialize track on start
+  updateSliderTrack();
 
   // Initialize query parameters from URL
   const initFiltersFromUrl = () => {
@@ -31,15 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (urlParams.has('search')) {
       filterSearch.value = urlParams.get('search');
     }
-    
-    // Checkboxes for category
-    const checkedCategories = urlParams.getAll('category');
-    const checkboxes = document.querySelectorAll('input[name="category"]');
-    checkboxes.forEach(cb => {
-      if (checkedCategories.includes(cb.value)) {
-        cb.checked = true;
-      }
-    });
   };
 
   const getActiveFilters = () => {
@@ -61,15 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
       filters.subCategory = filterSubcategory.value;
     }
 
-    // Accumulate checked categories
-    const checkedCategories = [];
-    const checkboxes = document.querySelectorAll('input[name="category"]:checked');
-    checkboxes.forEach(cb => checkedCategories.push(cb.value));
     
-    if (checkedCategories.length > 0) {
-      // If we checked boxes, query backend. MDB route handles single category param or multiple.
-      // Let's pass the first category or serialize correctly
-      filters.category = checkedCategories[0]; // simplistic fallback for client query
+    if (filterGender.value && filterGender.value !== 'All') {
+      filters.category = filterGender.value; // Map gender selection directly to product category query
     }
 
     if (filterMinPrice.value) {
@@ -86,17 +152,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const fetchAndRenderProducts = () => {
     // Show Loading skeletons
     productsGrid.innerHTML = `
-      <div class="shimmer h-[380px] rounded-3xl"></div>
-      <div class="shimmer h-[380px] rounded-3xl"></div>
-      <div class="shimmer h-[380px] rounded-3xl"></div>
-    `;
+      <div class="flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-150 dark:border-slate-800/40 p-4 h-[380px] justify-between shadow-sm animate-pulse">
+        <div>
+          <div class="h-48 w-full rounded-xl bg-slate-100 dark:bg-slate-800 shimmer mb-4"></div>
+          <div class="h-3 w-1/3 rounded bg-slate-100 dark:bg-slate-800 shimmer mb-2.5"></div>
+          <div class="h-4 w-3/4 rounded bg-slate-100 dark:bg-slate-800 shimmer mb-2"></div>
+          <div class="h-3 w-1/2 rounded bg-slate-100 dark:bg-slate-800 shimmer"></div>
+        </div>
+        <div class="flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-800/20">
+          <div class="h-5 w-20 rounded bg-slate-100 dark:bg-slate-800 shimmer"></div>
+          <div class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 shimmer"></div>
+        </div>
+      </div>
+    `.repeat(3);
 
     const filters = getActiveFilters();
 
     clovasApi.getProducts(filters)
       .then(data => {
-        const products = data.products || [];
-        resultsCount.textContent = data.total || 0;
+        let products = data.products || [];
+        
+        // Filter by color in frontend
+        if (filterColor && filterColor.value !== 'All') {
+          products = products.filter(prod => getProductColor(prod._id) === filterColor.value);
+        }
+        
+        resultsCount.textContent = products.length;
 
         if (products.length === 0) {
           productsGrid.innerHTML = `
@@ -121,10 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const isWishlisted = wishlist.some(item => item._id === prod._id);
 
           const card = document.createElement('div');
-          card.className = 'group flex flex-col bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/40 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative animate-fade-in';
+          card.className = 'group flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800/40 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative scroll-reveal-bottom';
           card.innerHTML = `
             <!-- Image -->
-            <div class="h-64 overflow-hidden relative">
+            <div class="h-52 overflow-hidden relative">
               <a href="product.html?id=${prod._id}">
                 <img src="${prod.images[0]}" alt="${prod.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
               </a>
@@ -138,21 +219,21 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             
             <!-- Content -->
-            <div class="p-6 flex-1 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-primary-500 uppercase tracking-widest block mb-1">${prod.category} • ${prod.subCategory}</span>
+            <div class="flex-1 flex flex-col justify-between">
+              <div class="p-5 flex-1">
+                <span class="text-[10px] font-bold text-primary-500 uppercase tracking-widest block mb-1">${prod.category} • ${prod.subCategory} • Color: ${getProductColor(prod._id)}</span>
                 <a href="product.html?id=${prod._id}">
-                  <h3 class="font-serif text-lg font-bold text-slate-800 dark:text-white leading-snug hover:text-primary-600 dark:hover:text-primary-400 transition-colors line-clamp-1">${prod.title}</h3>
+                  <h3 class="font-serif text-base font-bold text-slate-800 dark:text-white leading-snug hover:text-primary-600 dark:hover:text-primary-400 transition-colors line-clamp-1">${prod.title}</h3>
                 </a>
-                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 leading-relaxed">${prod.description}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1.5 leading-relaxed">${prod.description}</p>
               </div>
               
-              <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/40">
+              <div class="px-5 py-3.5 bg-slate-50/80 dark:bg-slate-900/60 border-t border-slate-100 dark:border-slate-850/60 flex items-center justify-between">
                 <div class="flex flex-col">
                   ${priceHtml}
                 </div>
                 
-                <button class="add-to-cart-btn h-11 w-11 rounded-xl bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 shadow-md transition-colors" data-id="${prod._id}">
+                <button class="add-to-cart-btn h-10 w-10 rounded-xl bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 shadow-md transition-colors" data-id="${prod._id}">
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </button>
               </div>
@@ -170,7 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const isAdded = toggleWishlist(prod);
             const svg = e.currentTarget.querySelector('svg');
             if (isAdded) {
-              svg.classList.add('fill-red-500', 'text-red-500');
+              svg.classList.add('fill-red-500', 'text-red-500', 'animate-heart-beat');
+              setTimeout(() => svg.classList.remove('animate-heart-beat'), 600);
             } else {
               svg.classList.remove('fill-red-500', 'text-red-500');
             }
@@ -256,16 +338,24 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAndRenderProducts();
   });
 
+  if (filterColor) {
+    filterColor.addEventListener('change', () => {
+      currentPage = 1;
+      fetchAndRenderProducts();
+    });
+  }
+
   clearFiltersBtn.addEventListener('click', (e) => {
     e.preventDefault();
     filterSearch.value = '';
     filterGender.value = 'All';
     filterSubcategory.value = 'All';
-    filterMinPrice.value = '';
-    filterMaxPrice.value = '';
-    
-    const checkboxes = document.querySelectorAll('input[name="category"]');
-    checkboxes.forEach(cb => cb.checked = false);
+    if (filterColor) {
+      filterColor.value = 'All';
+    }
+    priceSliderMin.value = 0;
+    priceSliderMax.value = 15000;
+    updateSliderTrack();
 
     currentPage = 1;
     fetchAndRenderProducts();

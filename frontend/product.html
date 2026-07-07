@@ -32,16 +32,16 @@
   <div id="header-placeholder"></div>
 
   <!-- Main Product Detail -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="glass p-8 md:p-12 rounded-3xl shadow-xl flex flex-col md:flex-row gap-12 border border-slate-100 dark:border-slate-850/50 animate-scale-up">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="glass p-6 md:p-8 rounded-2xl shadow-xl flex flex-col md:flex-row gap-8 border border-slate-100 dark:border-slate-850/50 animate-scale-up">
       
       <!-- Product Gallery -->
       <div class="w-full md:w-1/2 flex flex-col gap-4 animate-slide-left">
-        <div class="h-[450px] w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-150 dark:border-slate-800">
+        <div class="h-[380px] w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-150 dark:border-slate-800">
           <img id="main-product-img" src="" alt="" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
         </div>
         <!-- Thumbnails -->
-        <div id="product-thumbnails" class="flex gap-4 overflow-x-auto pb-2">
+        <div id="product-thumbnails" class="flex gap-3 overflow-x-auto pb-2">
           <!-- Thumbnails loaded by JS -->
         </div>
       </div>
@@ -50,57 +50,57 @@
       <div class="w-full md:w-1/2 flex flex-col justify-between animate-slide-right">
         <div>
           <!-- Categories & Badge -->
-          <div class="flex items-center gap-3 mb-4">
-            <span id="product-category" class="text-xs font-bold uppercase tracking-wider text-primary-500 bg-primary-50 dark:bg-primary-950/30 px-3 py-1.5 rounded-lg">Category</span>
-            <span id="stock-badge" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-450 border border-emerald-100 dark:border-emerald-900/30">In Stock</span>
+          <div class="flex items-center gap-2 mb-3">
+            <span id="product-category" class="text-[10px] font-bold uppercase tracking-wider text-primary-500 bg-primary-50 dark:bg-primary-950/30 px-2.5 py-1 rounded-lg">Category</span>
+            <span id="stock-badge" class="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-450 border border-emerald-100 dark:border-emerald-900/30">In Stock</span>
           </div>
 
-          <h1 id="product-title" class="font-serif text-3xl md:text-4xl font-bold leading-tight mb-2">Product Title</h1>
+          <h1 id="product-title" class="font-serif text-2xl md:text-3xl font-bold leading-tight mb-2">Product Title</h1>
           
           <!-- Rating -->
-          <div class="flex items-center gap-2 mb-6">
-            <div class="flex text-amber-400" id="rating-stars">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="flex text-amber-400 text-sm" id="rating-stars">
               <!-- Injected by JS -->
             </div>
-            <span class="text-sm font-semibold" id="rating-value">0.0</span>
+            <span class="text-xs font-semibold" id="rating-value">0.0</span>
             <span class="text-xs text-slate-450 dark:text-slate-500">|</span>
             <span class="text-xs text-slate-500 dark:text-slate-400 hover:underline cursor-pointer" id="goto-reviews"><span id="reviews-count">0</span> Reviews</span>
           </div>
 
           <!-- Price -->
-          <div class="mb-8 pb-6 border-b border-slate-150 dark:border-slate-800">
+          <div class="mb-5 pb-4 border-b border-slate-150 dark:border-slate-800">
             <div class="flex items-baseline gap-3">
-              <span id="product-price" class="text-3xl font-extrabold text-slate-900 dark:text-white">0 BDT</span>
-              <span id="product-old-price" class="text-lg text-slate-450 line-through hidden">0 BDT</span>
+              <span id="product-price" class="text-2xl font-extrabold text-slate-900 dark:text-white">0 BDT</span>
+              <span id="product-old-price" class="text-sm text-slate-450 line-through hidden">0 BDT</span>
             </div>
           </div>
 
           <!-- Description -->
-          <div class="mb-8">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Description</h4>
-            <p id="product-desc" class="text-sm leading-relaxed text-slate-655 dark:text-slate-400">Loading details...</p>
+          <div class="mb-5">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Description</h4>
+            <p id="product-desc" class="text-xs leading-relaxed text-slate-600 dark:text-slate-400">Loading details...</p>
           </div>
         </div>
 
         <!-- Purchase Actions -->
-        <div class="flex flex-col gap-4 mt-8 pt-6 border-t border-slate-150 dark:border-slate-800">
+        <div class="flex flex-col gap-4 mt-6 pt-5 border-t border-slate-150 dark:border-slate-800">
           <div class="flex items-center gap-4">
             <!-- Qty Counter -->
-            <div class="flex items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden h-14 w-32">
-              <button id="qty-dec" class="w-10 h-full flex items-center justify-center font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">-</button>
-              <input type="number" id="qty-input" value="1" min="1" class="w-12 h-full text-center font-bold text-sm bg-transparent border-none focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-              <button id="qty-inc" class="w-10 h-full flex items-center justify-center font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">+</button>
+            <div class="flex items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden h-11 w-28">
+              <button id="qty-dec" class="w-8 h-full flex items-center justify-center font-bold text-base hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">-</button>
+              <input type="number" id="qty-input" value="1" min="1" class="w-10 h-full text-center font-bold text-xs bg-transparent border-none focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+              <button id="qty-inc" class="w-8 h-full flex items-center justify-center font-bold text-base hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">+</button>
             </div>
 
             <!-- Add to Cart -->
-            <button id="add-to-cart-btn" class="flex-grow h-14 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 shadow-md transition-colors flex items-center justify-center gap-2">
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <button id="add-to-cart-btn" class="flex-grow h-11 bg-primary-600 text-white text-sm font-bold rounded-xl hover:bg-primary-700 shadow-md transition-colors flex items-center justify-center gap-2">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
               Add to Bag
             </button>
 
             <!-- Wishlist Toggle -->
-            <button id="detail-wishlist-btn" class="h-14 w-14 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-red-500 dark:hover:border-red-500 flex items-center justify-center text-slate-550 dark:text-slate-400 hover:text-red-500 transition-all">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <button id="detail-wishlist-btn" class="h-11 w-11 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-red-500 dark:hover:border-red-500 flex items-center justify-center text-slate-550 dark:text-slate-400 hover:text-red-500 transition-all">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             </button>
           </div>
         </div>

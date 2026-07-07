@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // COD path
         showToast('Order confirmed successfully!');
         setTimeout(() => {
-          window.location.href = 'dashboard.html?status=success&method=cod';
+          window.location.href = 'dashboard.html?status=success&method=cod&tab=orders';
         }, 1200);
       }
     } catch (err) {
