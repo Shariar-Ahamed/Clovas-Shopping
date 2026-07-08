@@ -1,20 +1,5 @@
 {
   "cleanUrls": true,
-  "redirects": [
-    { "source": "/frontend", "destination": "/Home", "permanent": true },
-    { "source": "/frontend/index.html", "destination": "/Home", "permanent": true },
-    { "source": "/frontend/shop.html", "destination": "/shop", "permanent": true },
-    { "source": "/frontend/product.html", "destination": "/product", "permanent": true },
-    { "source": "/frontend/cart.html", "destination": "/cart", "permanent": true },
-    { "source": "/frontend/checkout.html", "destination": "/checkout", "permanent": true },
-    { "source": "/frontend/dashboard.html", "destination": "/dashboard", "permanent": true },
-    { "source": "/frontend/auth.html", "destination": "/auth", "permanent": true },
-    { "source": "/frontend/about.html", "destination": "/about", "permanent": true },
-    { "source": "/frontend/contact.html", "destination": "/contact", "permanent": true },
-    { "source": "/frontend/faq.html", "destination": "/faq", "permanent": true },
-    { "source": "/frontend/privacy.html", "destination": "/privacy", "permanent": true },
-    { "source": "/frontend/terms.html", "destination": "/terms", "permanent": true }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/Home", "destination": "/frontend/index.html" },
