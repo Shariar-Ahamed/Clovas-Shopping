@@ -47,21 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cart.forEach(item => {
       const card = document.createElement('div');
-      card.className = 'glass p-6 rounded-2xl flex items-center justify-between gap-6 border border-slate-100 dark:border-slate-850/40 relative animate-fade-in';
+      card.className = 'glass p-5 md:p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6 border border-slate-100 dark:border-slate-850/40 relative animate-fade-in';
       card.innerHTML = `
         <!-- Left: Image & Title -->
         <div class="flex items-center gap-4">
-          <div class="h-24 w-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex-shrink-0">
+          <div class="h-20 w-16 md:h-24 md:w-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex-shrink-0">
             <img src="${item.image}" class="w-full h-full object-cover">
           </div>
           <div>
-            <h4 class="font-serif text-sm font-bold text-slate-800 dark:text-white">${item.title}</h4>
+            <h4 class="font-serif text-sm font-bold text-slate-800 dark:text-white line-clamp-2">${item.title}</h4>
             <span class="text-xs text-slate-500 dark:text-slate-400 mt-1 block">${item.price} BDT</span>
           </div>
         </div>
 
-        <!-- Middle/Right: Qty Controls, Price, Remove -->
-        <div class="flex items-center gap-8">
+        <!-- Right: Qty Controls, Price, Remove -->
+        <div class="flex items-center justify-between sm:justify-end gap-4 sm:gap-8 w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-slate-100 dark:border-slate-800/20">
           <!-- Counter -->
           <div class="flex items-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden h-9">
             <button class="dec-btn w-8 h-full flex items-center justify-center font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" data-id="${item.product}">-</button>
@@ -70,10 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Total price per item -->
-          <span class="text-sm font-bold text-slate-800 dark:text-white w-24 text-right">${item.price * item.quantity} BDT</span>
+          <span class="text-sm font-bold text-slate-800 dark:text-white w-20 sm:w-24 text-right">${item.price * item.quantity} BDT</span>
 
           <!-- Delete -->
-          <button class="remove-btn p-2 rounded-lg text-slate-450 hover:bg-red-50 hover:text-red-500 transition-colors" data-id="${item.product}">
+          <button class="remove-btn p-2 rounded-lg text-slate-450 hover:bg-red-50 hover:text-red-500 transition-colors flex-shrink-0" data-id="${item.product}">
             <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           </button>
         </div>
