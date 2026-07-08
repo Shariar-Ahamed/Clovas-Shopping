@@ -1,21 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/Home", "destination": "/frontend/index.html" },
-    { "source": "/shop", "destination": "/frontend/shop.html" },
-    { "source": "/product", "destination": "/frontend/product.html" },
-    { "source": "/cart", "destination": "/frontend/cart.html" },
-    { "source": "/checkout", "destination": "/frontend/checkout.html" },
-    { "source": "/dashboard", "destination": "/frontend/dashboard.html" },
-    { "source": "/auth", "destination": "/frontend/auth.html" },
-    { "source": "/about", "destination": "/frontend/about.html" },
-    { "source": "/contact", "destination": "/frontend/contact.html" },
-    { "source": "/faq", "destination": "/frontend/faq.html" },
-    { "source": "/privacy", "destination": "/frontend/privacy.html" },
-    { "source": "/terms", "destination": "/frontend/terms.html" },
-    { "source": "/css/:path*", "destination": "/frontend/css/:path*" },
-    { "source": "/js/:path*", "destination": "/frontend/js/:path*" },
-    { "source": "/admin/:path*", "destination": "/frontend/admin/:path*" }
+    { "source": "/:path*", "destination": "/frontend/:path*" }
   ]
 }
