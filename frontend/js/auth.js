@@ -494,8 +494,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Automatically redirect user if already signed in
-  clovasAuth.getCurrentUser().then(user => {
+  // Automatically redirect user if already signed in or when returning from Google redirect
+  clovasAuth.onAuthStateChanged(user => {
     if (user) {
       if (user.email && user.email.includes('admin')) {
         window.location.href = 'admin/index.html';

@@ -49,8 +49,18 @@ const ensureInitialized = () => {
       try {
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
         const app = initializeApp(activeConfig);
-        const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+        const { getAuth, getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
         authInstance = getAuth();
+        
+        // Handle pending redirect results from Google Sign-In
+        getRedirectResult(authInstance).then((result) => {
+          if (result) {
+            console.log("Google redirect sign-in completed for user:", result.user.email);
+          }
+        }).catch((err) => {
+          console.error("Google redirect sign-in error:", err);
+        });
+
         console.log("Firebase Auth Initialized Successfully.");
       } catch (err) {
         console.error("Failed to load Firebase, running in Mock Mode:", err);
@@ -213,6 +223,18 @@ const clovasAuth = {
           }
         };
         checkAuth();
+      }
+    });
+  },
+
+  // Listen to Auth State Changes
+  onAuthStateChanged: (callback) => {
+    ensureInitialized().then(() => {
+      if (isMockMode) {
+        const user = JSON.parse(localStorage.getItem('mock_current_user') || 'null');
+        callback(user);
+      } else {
+        authInstance.onAuthStateChanged(callback);
       }
     });
   },
