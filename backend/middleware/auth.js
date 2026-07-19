@@ -40,9 +40,14 @@ const protect = async (req, res, next) => {
 
       // Standard Firebase verification
       let decodedToken;
+      const isProduction = process.env.NODE_ENV === 'production';
+
       if (admin && typeof admin.auth === 'function' && admin.apps && admin.apps.length > 0) {
         decodedToken = await admin.auth().verifyIdToken(token);
       } else {
+        if (isProduction) {
+          throw new Error('Firebase Admin SDK is not initialized. Check server configurations.');
+        }
         console.warn('Firebase Admin not initialized. Using mock verification fallback.');
         const uid = token.startsWith('mock-custom-token-for-') ? token.replace('mock-custom-token-for-', '') : 'mock-user-uid';
         decodedToken = {
