@@ -35,4 +35,7 @@ const initializeFirebase = () => {
   return admin;
 };
 
+// Automatically initialize on import for Serverless / Vercel environments
+initializeFirebase();
+
 module.exports = { initializeFirebase, admin };
