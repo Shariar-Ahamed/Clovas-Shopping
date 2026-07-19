@@ -101,6 +101,10 @@ router.post('/send-otp', async (req, res) => {
       { upsert: true, new: true }
     );
 
+    // Find the user if they exist to get their name
+    const existingUser = await User.findOne({ email });
+    const userName = existingUser ? existingUser.name : email.split('@')[0];
+
     // Check if EmailJS credentials are set
     const { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY, EMAILJS_PRIVATE_KEY } = process.env;
 
@@ -120,6 +124,7 @@ router.post('/send-otp', async (req, res) => {
           accessToken: EMAILJS_PRIVATE_KEY || undefined,
           template_params: {
             to_email: email,
+            user_name: userName,
             otp_code: otpCode,
             app_name: "Clovas Shopping"
           }
