@@ -168,9 +168,8 @@ const injectHeaderAndFooter = async () => {
           <div class="flex items-center justify-between h-20 gap-4">
             <!-- Left: Logo -->
             <div class="flex-shrink-0 flex items-center">
-              <a href="index.html" class="flex items-center gap-2.5 group">
-                <img src="assets/logo-removebg.png" alt="C" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform">
-                <span class="font-serif text-2xl font-bold tracking-wide text-slate-800 dark:text-white">Clovas<span class="text-emerald-500 font-sans font-normal text-sm block -mt-1 tracking-widest">SHOPPING</span></span>
+              <a href="index.html" class="flex items-center group">
+                <img src="assets/logo-removebg.png" alt="Clovas Shopping" class="h-12 w-auto object-contain group-hover:scale-105 transition-transform">
               </a>
             </div>
             
