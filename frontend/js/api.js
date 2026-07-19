@@ -1,6 +1,13 @@
 import clovasAuth from './firebase-config.js';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const getApiBaseUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000/api';
+  }
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // --- Complete 47 Subcategories Mock Database ---
 const MOCK_PRODUCTS = [
