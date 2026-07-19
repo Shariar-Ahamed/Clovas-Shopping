@@ -308,4 +308,25 @@ router.get('/firebase-config', (req, res) => {
   });
 });
 
+// @desc    Debug Database Connection and Users
+// @route   GET /api/auth/debug-db
+// @access  Public
+router.get('/debug-db', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('../models/User');
+    const count = await User.countDocuments({});
+    const users = await User.find({}, 'email firebaseUid name role');
+    res.json({
+      readyState: mongoose.connection.readyState,
+      host: mongoose.connection.host,
+      dbName: mongoose.connection.name,
+      usersCount: count,
+      usersList: users
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
