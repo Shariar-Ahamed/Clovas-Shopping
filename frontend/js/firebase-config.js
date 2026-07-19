@@ -3,12 +3,13 @@
 // Otherwise, the site will automatically run in Mock Mode for easy testing!
 
 const firebaseConfig = {
-  apiKey: "PLACEHOLDER_API_KEY",
-  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
-  projectId: "PLACEHOLDER_PROJECT_ID",
-  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
-  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
-  appId: "PLACEHOLDER_APP_ID"
+  apiKey: "AIzaSyD_k4JeEXu0FGjYeQuEr-SHiXS7hFRZoOE",
+  authDomain: "clovas-shop.firebaseapp.com",
+  projectId: "clovas-shop",
+  storageBucket: "clovas-shop.firebasestorage.app",
+  messagingSenderId: "29461224368",
+  appId: "1:29461224368:web:bc92e82dc973579d259475",
+  measurementId: "G-9SWYX9126P"
 };
 
 let authInstance = null;
