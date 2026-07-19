@@ -425,8 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      showToast('Verifying OTP...', 'success');
-      
       const response = await fetch(`${getApiBaseUrl()}/auth/verify-otp`, {
         method: 'POST',
         headers: {
@@ -442,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // OTP verified successfully! Complete Firebase Registration
-      showToast('Email verified! Creating account...', 'success');
       await clovasAuth.register(email, password, name);
       
       // Hide form container, show success checkmark container

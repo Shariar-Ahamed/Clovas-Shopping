@@ -93,12 +93,20 @@ export const toggleWishlist = (product) => {
 export const showToast = (message, type = 'success') => {
   const container = document.getElementById('toast-container') || createToastContainer();
   const toast = document.createElement('div');
-  toast.className = `px-6 py-4 rounded-xl shadow-xl glass transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-3 border-l-4 ${
-    type === 'success' ? 'border-emerald-500 text-emerald-800 dark:text-emerald-200' : 'border-red-500 text-red-800 dark:text-red-200'
-  }`;
   
+  toast.className = `px-5 py-3.5 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-150/80 dark:border-slate-800/80 transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-3 max-w-sm`;
+  
+  const icon = type === 'success' 
+    ? `<div class="p-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 flex items-center justify-center">
+         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+       </div>`
+    : `<div class="p-1 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center">
+         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+       </div>`;
+
   toast.innerHTML = `
-    <span class="font-medium">${message}</span>
+    ${icon}
+    <span class="font-sans text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">${message}</span>
   `;
   
   container.appendChild(toast);
@@ -108,11 +116,11 @@ export const showToast = (message, type = 'success') => {
     toast.classList.remove('translate-y-2', 'opacity-0');
   }, 10);
   
-  // Remove after 3s
+  // Remove after 3.2s
   setTimeout(() => {
     toast.classList.add('translate-y-2', 'opacity-0');
     setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  }, 3200);
 };
 
 const createToastContainer = () => {
