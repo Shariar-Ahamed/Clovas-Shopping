@@ -168,8 +168,8 @@ const injectHeaderAndFooter = async () => {
           <div class="flex items-center justify-between h-20 gap-4">
             <!-- Left: Logo -->
             <div class="flex-shrink-0 flex items-center">
-              <a href="index.html" class="flex items-center gap-2 group">
-                <span class="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary-600 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:scale-105 transition-transform">C</span>
+              <a href="index.html" class="flex items-center gap-2.5 group">
+                <img src="assets/logo-removebg.png" alt="C" class="h-10 w-10 object-contain rounded-xl group-hover:scale-105 transition-transform">
                 <span class="font-serif text-2xl font-bold tracking-wide text-slate-800 dark:text-white">Clovas<span class="text-emerald-500 font-sans font-normal text-sm block -mt-1 tracking-widest">SHOPPING</span></span>
               </a>
             </div>
@@ -374,7 +374,7 @@ const injectHeaderAndFooter = async () => {
             <!-- Brand -->
             <div class="flex flex-col gap-4">
               <div class="flex items-center gap-2">
-                <span class="h-8 w-8 rounded-lg bg-gradient-to-tr from-primary-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">C</span>
+                <img src="assets/logo-removebg.png" alt="C" class="h-8 w-8 object-contain rounded-lg">
                 <span class="font-serif text-xl font-bold tracking-wide text-slate-855 dark:text-white">Clovas Shopping</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-light">Premium Fashion • Trusted Shopping • Fast Delivery. Delivering premium clothing, shoes, and luxury accessories directly to your door.</p>
