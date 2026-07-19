@@ -315,6 +315,7 @@ router.get('/debug-db', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('../models/User');
+    const rawAdmin = require('firebase-admin');
     const { admin } = require('../config/firebase-admin');
     const count = await User.countDocuments({});
     const users = await User.find({}, 'email firebaseUid name role');
@@ -325,6 +326,8 @@ router.get('/debug-db', async (req, res) => {
       usersCount: count,
       firebaseAdminInitialized: (admin && admin.apps && admin.apps.length > 0) ? true : false,
       firebaseInitError: global.firebaseInitError || 'None',
+      rawAdminKeys: Object.keys(rawAdmin || {}),
+      rawAdminDefaultKeys: Object.keys(rawAdmin?.default || {}),
       firebaseServiceAccountJsonLength: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? process.env.FIREBASE_SERVICE_ACCOUNT_JSON.length : 0,
       firebaseServiceAccountJsonPrefix: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? process.env.FIREBASE_SERVICE_ACCOUNT_JSON.substring(0, 30) + '...' : 'undefined',
       nodeEnv: process.env.NODE_ENV,
