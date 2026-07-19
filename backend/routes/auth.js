@@ -297,6 +297,7 @@ router.post('/verify-otp', async (req, res) => {
 // @route   GET /api/auth/firebase-config
 // @access  Public
 router.get('/firebase-config', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.json({
     apiKey: process.env.FIREBASE_API_KEY || "",
     authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",

@@ -22,7 +22,8 @@ const ensureInitialized = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/auth/firebase-config`, {
-        signal: controller.signal
+        signal: controller.signal,
+        cache: 'no-store'
       });
       clearTimeout(timeoutId);
       if (response.ok) {
