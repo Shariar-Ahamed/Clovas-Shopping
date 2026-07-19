@@ -1,15 +1,36 @@
-// Firebase SDK and Mock Auth Fallback configuration
-// If you want to use real Firebase, populate the config below.
-// Otherwise, the site will automatically run in Mock Mode for easy testing!
+const getApiBaseUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000/api';
+  }
+  return '/api';
+};
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD_k4JeEXu0FGjYeQuEr-SHiXS7hFRZoOE",
-  authDomain: "clovas-shop.firebaseapp.com",
-  projectId: "clovas-shop",
-  storageBucket: "clovas-shop.firebasestorage.app",
-  messagingSenderId: "29461224368",
-  appId: "1:29461224368:web:bc92e82dc973579d259475",
-  measurementId: "G-9SWYX9126P"
+const getFirebaseConfig = async () => {
+  const API_BASE_URL = getApiBaseUrl();
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/firebase-config`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.apiKey) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn("Could not fetch Firebase config from backend. Running fallback.", err);
+  }
+  return null;
+};
+
+// Dynamically fetch config on module load
+const serverConfig = await getFirebaseConfig();
+
+const firebaseConfig = serverConfig || {
+  apiKey: "PLACEHOLDER_API_KEY",
+  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
+  projectId: "PLACEHOLDER_PROJECT_ID",
+  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
+  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
+  appId: "PLACEHOLDER_APP_ID"
 };
 
 let authInstance = null;
@@ -21,20 +42,16 @@ if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "PLACEHOLDER_API_KEY") {
 }
 
 if (!isMockMode) {
-  // Load Firebase dynamically
-  import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js")
-    .then(({ initializeApp }) => {
-      const app = initializeApp(firebaseConfig);
-      return import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    })
-    .then(({ getAuth }) => {
-      authInstance = getAuth();
-      console.log("Firebase Auth Initialized Successfully.");
-    })
-    .catch(err => {
-      console.error("Failed to load Firebase, running in Mock Mode:", err);
-      isMockMode = true;
-    });
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+    const app = initializeApp(firebaseConfig);
+    const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    authInstance = getAuth();
+    console.log("Firebase Auth Initialized Successfully.");
+  } catch (err) {
+    console.error("Failed to load Firebase, running in Mock Mode:", err);
+    isMockMode = true;
+  }
 }
 
 // Unified Auth Interface
