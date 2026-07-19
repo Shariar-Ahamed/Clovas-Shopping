@@ -315,6 +315,7 @@ router.get('/debug-db', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('../models/User');
+    const { admin } = require('../config/firebase-admin');
     const count = await User.countDocuments({});
     const users = await User.find({}, 'email firebaseUid name role');
     res.json({
@@ -322,6 +323,11 @@ router.get('/debug-db', async (req, res) => {
       host: mongoose.connection.host,
       dbName: mongoose.connection.name,
       usersCount: count,
+      firebaseAdminInitialized: (admin && admin.apps && admin.apps.length > 0) ? true : false,
+      firebaseInitError: global.firebaseInitError || 'None',
+      firebaseServiceAccountJsonLength: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? process.env.FIREBASE_SERVICE_ACCOUNT_JSON.length : 0,
+      firebaseServiceAccountJsonPrefix: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? process.env.FIREBASE_SERVICE_ACCOUNT_JSON.substring(0, 30) + '...' : 'undefined',
+      nodeEnv: process.env.NODE_ENV,
       usersList: users
     });
   } catch (error) {
