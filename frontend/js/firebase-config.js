@@ -140,10 +140,11 @@ const clovasAuth = {
       localStorage.setItem('mock_current_user', JSON.stringify(googleUser));
       return googleUser;
     } else {
-      const { signInWithPopup, GoogleAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      const { signInWithRedirect, GoogleAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
       const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(authInstance, provider);
-      return userCredential.user;
+      await signInWithRedirect(authInstance, provider);
+      // signInWithRedirect triggers a page redirection, so it doesn't return immediately
+      return null;
     }
   },
 

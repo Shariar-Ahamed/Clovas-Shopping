@@ -484,11 +484,24 @@ document.addEventListener('DOMContentLoaded', () => {
     hideError();
     try {
       showToast('Connecting Google...', 'success');
-      await clovasAuth.loginWithGoogle();
-      showToast('Logged in via Google!');
-      setTimeout(() => window.location.href = 'index.html', 1000);
+      const user = await clovasAuth.loginWithGoogle();
+      if (user) {
+        showToast('Logged in via Google!');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
     } catch (error) {
       showError(error.message);
+    }
+  });
+
+  // Automatically redirect user if already signed in
+  clovasAuth.getCurrentUser().then(user => {
+    if (user) {
+      if (user.email && user.email.includes('admin')) {
+        window.location.href = 'admin/index.html';
+      } else {
+        window.location.href = 'index.html';
+      }
     }
   });
 });
