@@ -16,9 +16,9 @@ const ensureInitialized = () => {
     const API_BASE_URL = getApiBaseUrl();
     let config = null;
 
-    // Use AbortController with 800ms timeout to prevent page blocking
+    // Use AbortController with 5000ms timeout to prevent page blocking on serverless cold starts
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 800);
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     try {
       const response = await fetch(`${API_BASE_URL}/auth/firebase-config`, {
