@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const { initializeFirebase } = require('./config/firebase-admin');
-
 // Load environment variables
 dotenv.config();
+
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
+const { initializeFirebase } = require('./config/firebase-admin');
 
 // Connect Database
 connectDB();
