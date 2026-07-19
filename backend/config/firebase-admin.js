@@ -50,4 +50,13 @@ const initializeFirebase = () => {
 // Automatically initialize on import for Serverless / Vercel environments
 initializeFirebase();
 
-module.exports = { initializeFirebase, admin };
+const { getAuth } = require('firebase-admin/auth');
+
+const adminWrapper = {
+  auth: () => getAuth(),
+  get apps() {
+    return admin.getApps();
+  }
+};
+
+module.exports = { initializeFirebase, admin: adminWrapper };
