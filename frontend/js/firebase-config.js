@@ -5,54 +5,67 @@ const getApiBaseUrl = () => {
   return '/api';
 };
 
-const getFirebaseConfig = async () => {
-  const API_BASE_URL = getApiBaseUrl();
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/firebase-config`);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.apiKey) {
-        return data;
-      }
-    }
-  } catch (err) {
-    console.warn("Could not fetch Firebase config from backend. Running fallback.", err);
-  }
-  return null;
-};
-
-// Dynamically fetch config on module load
-const serverConfig = await getFirebaseConfig();
-
-const firebaseConfig = serverConfig || {
-  apiKey: "PLACEHOLDER_API_KEY",
-  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
-  projectId: "PLACEHOLDER_PROJECT_ID",
-  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
-  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
-  appId: "PLACEHOLDER_APP_ID"
-};
-
 let authInstance = null;
 let isMockMode = true;
+let initPromise = null;
 
-// Detect if config is still placeholders
-if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "PLACEHOLDER_API_KEY") {
-  isMockMode = false;
-}
+const ensureInitialized = () => {
+  if (initPromise) return initPromise;
 
-if (!isMockMode) {
-  try {
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
-    const app = initializeApp(firebaseConfig);
-    const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    authInstance = getAuth();
-    console.log("Firebase Auth Initialized Successfully.");
-  } catch (err) {
-    console.error("Failed to load Firebase, running in Mock Mode:", err);
-    isMockMode = true;
-  }
-}
+  initPromise = (async () => {
+    const API_BASE_URL = getApiBaseUrl();
+    let config = null;
+
+    // Use AbortController with 800ms timeout to prevent page blocking
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 800);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/firebase-config`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.apiKey) {
+          config = data;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch Firebase config from backend. Running fallback.", err);
+    }
+
+    const activeConfig = config || {
+      apiKey: "PLACEHOLDER_API_KEY",
+      authDomain: "PLACEHOLDER_AUTH_DOMAIN",
+      projectId: "PLACEHOLDER_PROJECT_ID",
+      storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
+      messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
+      appId: "PLACEHOLDER_APP_ID"
+    };
+
+    if (activeConfig.apiKey && activeConfig.apiKey !== "PLACEHOLDER_API_KEY") {
+      isMockMode = false;
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+        const app = initializeApp(activeConfig);
+        const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+        authInstance = getAuth();
+        console.log("Firebase Auth Initialized Successfully.");
+      } catch (err) {
+        console.error("Failed to load Firebase, running in Mock Mode:", err);
+        isMockMode = true;
+      }
+    } else {
+      isMockMode = true;
+    }
+  })();
+
+  return initPromise;
+};
+
+// Trigger background initialization immediately without blocking script loading
+ensureInitialized();
 
 // Unified Auth Interface
 const clovasAuth = {
@@ -60,6 +73,7 @@ const clovasAuth = {
   
   // Register User
   register: async (email, password, name) => {
+    await ensureInitialized();
     if (isMockMode) {
       const users = JSON.parse(localStorage.getItem('mock_users') || '[]');
       if (users.find(u => u.email === email)) {
@@ -87,6 +101,7 @@ const clovasAuth = {
 
   // Login User
   login: async (email, password) => {
+    await ensureInitialized();
     if (isMockMode) {
       const users = JSON.parse(localStorage.getItem('mock_users') || '[]');
       const user = users.find(u => u.email === email);
@@ -95,7 +110,7 @@ const clovasAuth = {
         const newMockUser = {
           uid: 'mock-user-uid-' + (email.includes('admin') ? 'admin' : 'user'),
           email,
-          displayName: name = email.split('@')[0],
+          displayName: email.split('@')[0],
           role: email.includes('admin') ? 'admin' : 'user'
         };
         users.push(newMockUser);
@@ -114,6 +129,7 @@ const clovasAuth = {
 
   // Google Login
   loginWithGoogle: async () => {
+    await ensureInitialized();
     if (isMockMode) {
       const googleUser = {
         uid: 'mock-user-uid-google-' + Date.now(),
@@ -133,6 +149,7 @@ const clovasAuth = {
 
   // Logout
   logout: async () => {
+    await ensureInitialized();
     if (isMockMode) {
       localStorage.removeItem('mock_current_user');
       return true;
@@ -145,6 +162,7 @@ const clovasAuth = {
 
   // Forgot Password
   resetPassword: async (email) => {
+    await ensureInitialized();
     if (isMockMode) {
       console.log(`Mock reset password link sent to: ${email}`);
       return true;
@@ -157,7 +175,8 @@ const clovasAuth = {
 
   // Get Current User (promise based callback)
   getCurrentUser: () => {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      await ensureInitialized();
       if (isMockMode) {
         const user = JSON.parse(localStorage.getItem('mock_current_user') || 'null');
         resolve(user);
@@ -179,6 +198,7 @@ const clovasAuth = {
 
   // Get Auth Token for Backend Requests
   getToken: async () => {
+    await ensureInitialized();
     if (isMockMode) {
       const user = JSON.parse(localStorage.getItem('mock_current_user') || 'null');
       if (!user) return null;
