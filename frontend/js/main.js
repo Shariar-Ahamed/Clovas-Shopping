@@ -169,7 +169,7 @@ const injectHeaderAndFooter = async () => {
             <!-- Left: Logo -->
             <div class="flex-shrink-0 flex items-center">
               <a href="index.html" class="flex items-center group">
-                <img src="assets/logo-removebg.png" alt="Clovas Shopping" class="h-12 w-auto object-contain group-hover:scale-105 transition-transform">
+                <img src="assets/logo-removebg.png" alt="Clovas Shopping" class="h-8 w-auto object-contain group-hover:scale-105 transition-transform">
               </a>
             </div>
             
@@ -373,7 +373,7 @@ const injectHeaderAndFooter = async () => {
             <!-- Brand -->
             <div class="flex flex-col gap-4">
               <div class="flex items-center gap-2">
-                <img src="assets/logo-removebg.png" alt="C" class="h-8 w-auto object-contain">
+                <img src="assets/logo-removebg.png" alt="C" class="h-6 w-auto object-contain">
                 <span class="font-serif text-xl font-bold tracking-wide text-slate-855 dark:text-white">Clovas Shopping</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-light">Premium Fashion • Trusted Shopping • Fast Delivery. Delivering premium clothing, shoes, and luxury accessories directly to your door.</p>
