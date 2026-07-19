@@ -45,6 +45,10 @@ const ensureInitialized = () => {
     };
 
     if (activeConfig.apiKey && activeConfig.apiKey !== "PLACEHOLDER_API_KEY") {
+      // Local testing override for authDomain to bypass third-party cookie/iframe blocking
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        activeConfig.authDomain = "clovas-shop.firebaseapp.com";
+      }
       isMockMode = false;
       try {
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
