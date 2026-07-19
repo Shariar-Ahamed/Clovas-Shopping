@@ -324,7 +324,7 @@ router.get('/debug-db', async (req, res) => {
       host: mongoose.connection.host,
       dbName: mongoose.connection.name,
       usersCount: count,
-      firebaseAdminInitialized: (admin && admin.apps && admin.apps.length > 0) ? true : false,
+      firebaseAdminInitialized: (admin && (admin.apps || (typeof admin.getApps === 'function' ? admin.getApps() : [])).length > 0) ? true : false,
       firebaseInitError: global.firebaseInitError || 'None',
       rawAdminKeys: Object.keys(rawAdmin || {}),
       rawAdminDefaultKeys: Object.keys(rawAdmin?.default || {}),
