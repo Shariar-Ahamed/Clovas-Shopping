@@ -13,7 +13,7 @@ const initializeFirebase = () => {
           });
           console.log('Firebase Admin initialized via JSON String.');
           isInitialized = true;
-          global.firebaseInitError = 'Success (JSON)';
+          global.firebaseInitError = 'Success';
         } catch (jsonErr) {
           global.firebaseInitError = `JSON Parse Error: ${jsonErr.message}`;
           console.error(global.firebaseInitError);
@@ -29,7 +29,7 @@ const initializeFirebase = () => {
           });
           console.log('Firebase Admin initialized via individual Env variables.');
           isInitialized = true;
-          global.firebaseInitError = 'Success (Individual)';
+          global.firebaseInitError = 'Success';
         } catch (indErr) {
           global.firebaseInitError = `Individual Init Error: ${indErr.message}`;
           console.error(global.firebaseInitError);
