@@ -41,9 +41,8 @@ const protect = async (req, res, next) => {
       // Standard Firebase verification
       let decodedToken;
       const isProduction = process.env.NODE_ENV === 'production';
-      const initializedApps = admin && (admin.apps || (typeof admin.getApps === 'function' ? admin.getApps() : []));
 
-      if (admin && typeof admin.auth === 'function' && initializedApps && initializedApps.length > 0) {
+      if (admin && typeof admin.auth === 'function' && admin.apps && admin.apps.length > 0) {
         decodedToken = await admin.auth().verifyIdToken(token);
       } else {
         if (isProduction) {

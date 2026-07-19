@@ -18,7 +18,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "firebase-admin": "^14.1.0",
+    "firebase-admin": "^12.7.0",
     "mongoose": "^9.7.4",
     "multer": "^2.2.0",
     "sslcommerz-lts": "^1.2.0"

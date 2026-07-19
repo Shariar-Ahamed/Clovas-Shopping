@@ -1,5 +1,4 @@
-const adminModule = require('firebase-admin');
-const admin = adminModule.default || adminModule;
+const admin = require('firebase-admin');
 
 let isInitialized = false;
 
@@ -10,7 +9,7 @@ const initializeFirebase = () => {
         try {
           const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
           admin.initializeApp({
-            credential: admin.cert(serviceAccount)
+            credential: admin.credential.cert(serviceAccount)
           });
           console.log('Firebase Admin initialized via JSON String.');
           isInitialized = true;
@@ -22,7 +21,7 @@ const initializeFirebase = () => {
       } else if (process.env.FIREBASE_PRIVATE_KEY) {
         try {
           admin.initializeApp({
-            credential: admin.cert({
+            credential: admin.credential.cert({
               projectId: process.env.FIREBASE_PROJECT_ID,
               clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
               privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
@@ -50,13 +49,4 @@ const initializeFirebase = () => {
 // Automatically initialize on import for Serverless / Vercel environments
 initializeFirebase();
 
-const { getAuth } = require('firebase-admin/auth');
-
-const adminWrapper = {
-  auth: () => getAuth(),
-  get apps() {
-    return admin.getApps();
-  }
-};
-
-module.exports = { initializeFirebase, admin: adminWrapper };
+module.exports = { initializeFirebase, admin };
