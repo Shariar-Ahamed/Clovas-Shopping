@@ -19,7 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const gotoForgot = document.getElementById('goto-forgot');
   const backToLogin = document.getElementById('back-to-login');
 
+  // OTP elements
+  const toggleOtpModeBtn = document.getElementById('toggle-otp-mode-btn');
+  const loginPasswordGroup = document.getElementById('login-password-group');
+  const loginOtpGroup = document.getElementById('login-otp-group');
+  const loginPassword = document.getElementById('login-password');
+  const loginOtp = document.getElementById('login-otp');
+  const sendOtpBtn = document.getElementById('send-otp-btn');
+  const otpTimerMessage = document.getElementById('otp-timer-message');
+  const loginEmail = document.getElementById('login-email');
+
   let currentMode = 'login'; // login, register, forgot
+  let isOtpMode = false;
 
   const showError = (msg) => {
     errorMessage.textContent = msg;
@@ -30,10 +41,25 @@ document.addEventListener('DOMContentLoaded', () => {
     errorAlert.classList.add('hidden');
   };
 
+  const getApiBaseUrl = () => {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    return '/api';
+  };
+
   // Toggle Forms
   const switchMode = (mode) => {
     currentMode = mode;
     hideError();
+
+    // Reset OTP mode when switching between forms
+    isOtpMode = false;
+    loginPasswordGroup.classList.remove('hidden');
+    loginPassword.required = true;
+    loginOtpGroup.classList.add('hidden');
+    loginOtp.required = false;
+    toggleOtpModeBtn.textContent = 'Sign In with OTP';
 
     if (mode === 'login') {
       authTitle.textContent = 'Welcome Back';
@@ -80,26 +106,146 @@ document.addEventListener('DOMContentLoaded', () => {
   gotoForgot.addEventListener('click', () => switchMode('forgot'));
   backToLogin.addEventListener('click', () => switchMode('login'));
 
+  // Toggle OTP Sign-in Mode
+  toggleOtpModeBtn.addEventListener('click', () => {
+    isOtpMode = !isOtpMode;
+    hideError();
+
+    if (isOtpMode) {
+      loginPasswordGroup.classList.add('hidden');
+      loginPassword.required = false;
+      loginOtpGroup.classList.remove('hidden');
+      loginOtp.required = true;
+      toggleOtpModeBtn.textContent = 'Sign In with Password';
+    } else {
+      loginPasswordGroup.classList.remove('hidden');
+      loginPassword.required = true;
+      loginOtpGroup.classList.add('hidden');
+      loginOtp.required = false;
+      toggleOtpModeBtn.textContent = 'Sign In with OTP';
+    }
+  });
+
+  // Handle Send OTP click
+  sendOtpBtn.addEventListener('click', async () => {
+    const email = loginEmail.value;
+    if (!email) {
+      return showError('Please enter your email address first.');
+    }
+
+    hideError();
+    sendOtpBtn.disabled = true;
+    sendOtpBtn.textContent = 'Sending...';
+
+    try {
+      const response = await fetch(`${getApiBaseUrl()}/auth/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send OTP code.');
+      }
+
+      showToast('OTP code sent successfully!');
+      
+      // Start 60 second timer
+      let seconds = 60;
+      otpTimerMessage.classList.remove('hidden');
+      
+      if (data.mockOtp) {
+        otpTimerMessage.textContent = `[MOCK] Code: ${data.mockOtp}`;
+        console.log(`[MOCK OTP] Code: ${data.mockOtp}`);
+      } else {
+        otpTimerMessage.textContent = `Resend OTP in ${seconds}s`;
+      }
+
+      const interval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+          clearInterval(interval);
+          sendOtpBtn.disabled = false;
+          sendOtpBtn.textContent = 'Send OTP';
+          otpTimerMessage.classList.add('hidden');
+        } else {
+          if (!data.mockOtp) {
+            otpTimerMessage.textContent = `Resend OTP in ${seconds}s`;
+          }
+        }
+      }, 1000);
+
+    } catch (err) {
+      showError(err.message);
+      sendOtpBtn.disabled = false;
+      sendOtpBtn.textContent = 'Send OTP';
+    }
+  });
+
   // Handle Login Form Submit
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
+    const email = loginEmail.value;
 
-    try {
-      showToast('Signing in...', 'success');
-      await clovasAuth.login(email, password);
-      showToast('Logged in successfully!');
-      
-      // If it is admin email, redirect to Admin, else standard home
-      if (email.includes('admin')) {
-        setTimeout(() => window.location.href = 'admin/index.html', 1000);
-      } else {
-        setTimeout(() => window.location.href = 'index.html', 1000);
+    if (isOtpMode) {
+      const otp = loginOtp.value;
+      if (!otp || otp.length < 6) {
+        return showError('Please enter a valid 6-digit OTP code.');
       }
-    } catch (error) {
-      showError(error.message);
+
+      try {
+        showToast('Verifying OTP...', 'success');
+        
+        const response = await fetch(`${getApiBaseUrl()}/auth/verify-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, otp })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'OTP verification failed.');
+        }
+
+        // Log in to Firebase using Custom Token
+        await clovasAuth.signInWithCustomToken(data.customToken);
+
+        showToast(data.message || 'Logged in successfully!');
+
+        // If it is admin email, redirect to Admin, else standard home
+        if (email.includes('admin')) {
+          setTimeout(() => window.location.href = 'admin/index.html', 1000);
+        } else {
+          setTimeout(() => window.location.href = 'index.html', 1000);
+        }
+      } catch (error) {
+        showError(error.message);
+      }
+    } else {
+      const password = loginPassword.value;
+
+      try {
+        showToast('Signing in...', 'success');
+        await clovasAuth.login(email, password);
+        showToast('Logged in successfully!');
+        
+        // If it is admin email, redirect to Admin, else standard home
+        if (email.includes('admin')) {
+          setTimeout(() => window.location.href = 'admin/index.html', 1000);
+        } else {
+          setTimeout(() => window.location.href = 'index.html', 1000);
+        }
+      } catch (error) {
+        showError(error.message);
+      }
     }
   });
 

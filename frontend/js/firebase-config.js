@@ -147,6 +147,26 @@ const clovasAuth = {
     }
   },
 
+  // Sign In with Firebase Custom Token
+  signInWithCustomToken: async (customToken) => {
+    await ensureInitialized();
+    if (isMockMode) {
+      const uid = customToken.split('-for-')[1] || 'mock-otp-user';
+      const user = {
+        uid,
+        email: uid.includes('@') ? uid : `${uid}@gmail.com`,
+        displayName: uid.split('@')[0].replace('otp-user-', ''),
+        role: uid.includes('admin') ? 'admin' : 'user'
+      };
+      localStorage.setItem('mock_current_user', JSON.stringify(user));
+      return user;
+    } else {
+      const { signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      const userCredential = await signInWithCustomToken(authInstance, customToken);
+      return userCredential.user;
+    }
+  },
+
   // Logout
   logout: async () => {
     await ensureInitialized();
