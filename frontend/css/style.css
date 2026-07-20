@@ -51,29 +51,35 @@ html {
 
 /* Premium Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 1);
+  background: transparent;
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 1);
+  background: rgba(156, 163, 175, 0.25);
   border-radius: 99px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 1);
+  background: rgba(148, 163, 184, 0.25);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 1);
+  background: rgba(156, 163, 175, 0.45);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
 }
 
 /* Shimmer/Skeleton Effect */
@@ -537,6 +543,31 @@ input[type="range"]::-moz-range-track {
   height: 6px;
   background: transparent;
 }
+/* Custom premium HTML5 Date Input styling */
+input[type="date"],
+input[type="datetime-local"] {
+  position: relative;
+  min-height: 42px;
+}
 
+/* Chrome native calendar popup dark mode mapping */
+.dark input[type="date"],
+.dark input[type="datetime-local"] {
+  color-scheme: dark;
+}
 
-
+/* Overlay the indicator completely transparently so clicking anywhere triggers picker */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  color: transparent;
+  z-index: 10;
+}

@@ -1,6 +1,6 @@
 import clovasApi from './api.js';
 import clovasAuth from './firebase-config.js';
-import { showToast } from './main.js';
+import { showToast, showConfirm } from './main.js';
 
 // --- Shared Admin Access Verifier ---
 const verifyAdminAccess = async () => {
@@ -109,6 +109,9 @@ export const initProductsPanel = async () => {
   const form = document.getElementById('product-form');
 
   const formId = document.getElementById('form-product-id');
+  const formSku = document.getElementById('form-sku');
+  const skuValidationMsg = document.getElementById('sku-validation-msg');
+  const saveBtn = document.getElementById('save-product-btn');
   const formTitle = document.getElementById('form-title');
   const formDesc = document.getElementById('form-desc');
   const formPrice = document.getElementById('form-price');
@@ -129,7 +132,31 @@ export const initProductsPanel = async () => {
 
   // Load products list
   const loadAdminProducts = (queryText = '') => {
-    rowsContainer.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-semibold">Loading catalogue items...</td></tr>';
+    const productSkeleton = `
+      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
+        <td class="p-4 pl-6 flex items-center gap-3">
+          <div class="h-10 w-9 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+          <div class="h-4 w-32 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-20 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-28 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-16 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-12 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4 pr-6 text-right space-x-2">
+          <div class="inline-block h-8 w-12 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+          <div class="inline-block h-8 w-14 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+      </tr>
+    `;
+    rowsContainer.innerHTML = productSkeleton.repeat(4);
     
     clovasApi.getProducts({ search: queryText, limit: 100 })
       .then(data => {
@@ -138,7 +165,7 @@ export const initProductsPanel = async () => {
         rowsContainer.innerHTML = '';
 
         if (products.length === 0) {
-          rowsContainer.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500">No items matching criteria.</td></tr>';
+          rowsContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-500">No items matching criteria.</td></tr>';
           return;
         }
 
@@ -150,6 +177,7 @@ export const initProductsPanel = async () => {
               <img src="${prod.images[0]}" class="h-10 w-9 rounded-lg object-cover bg-slate-100">
               <span class="font-bold font-serif text-sm">${prod.title}</span>
             </td>
+            <td class="p-4 text-slate-500 font-mono font-bold">${prod.sku || '-'}</td>
             <td class="p-4 text-slate-550 dark:text-slate-400">${prod.gender} / ${prod.category}</td>
             <td class="p-4">${prod.price} BDT</td>
             <td class="p-4">${prod.stock}</td>
@@ -159,10 +187,12 @@ export const initProductsPanel = async () => {
             </td>
           `;
 
-          // Edit Action
           tr.querySelector('.edit-btn').addEventListener('click', () => {
             // Populate Modal Form
             formId.value = prod._id;
+            formSku.value = prod.sku || '';
+            skuValidationMsg.classList.add('hidden');
+            saveBtn.disabled = false;
             formTitle.value = prod.title;
             formDesc.value = prod.description;
             formPrice.value = prod.price;
@@ -184,8 +214,8 @@ export const initProductsPanel = async () => {
           });
 
           // Delete Action
-          tr.querySelector('.del-btn').addEventListener('click', async () => {
-            if (confirm(`Are you sure you want to delete ${prod.title}?`)) {
+          tr.querySelector('.del-btn').addEventListener('click', () => {
+            showConfirm(`Are you sure you want to delete ${prod.title}?`, async () => {
               try {
                 await clovasApi.adminDeleteProduct(prod._id);
                 showToast('Product deleted.');
@@ -193,7 +223,7 @@ export const initProductsPanel = async () => {
               } catch (e) {
                 showToast(e.message, 'error');
               }
-            }
+            });
           });
 
           rowsContainer.appendChild(tr);
@@ -201,7 +231,7 @@ export const initProductsPanel = async () => {
       })
       .catch(err => {
         console.error(err);
-        rowsContainer.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">Failed to load catalogue. Make sure server is running.</td></tr>';
+        rowsContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-red-500">Failed to load catalogue. Make sure server is running.</td></tr>';
       });
   };
 
@@ -235,6 +265,8 @@ export const initProductsPanel = async () => {
   openBtn.addEventListener('click', () => {
     form.reset();
     formId.value = '';
+    skuValidationMsg.classList.add('hidden');
+    saveBtn.disabled = false;
     uploadStatusMsg.classList.add('hidden');
     modalTitle.textContent = 'Add New Product';
     modal.classList.remove('hidden');
@@ -244,12 +276,51 @@ export const initProductsPanel = async () => {
     modal.classList.add('hidden');
   });
 
+  // Handle SKU Real-time validation check
+  let skuCheckTimeout = null;
+  formSku.addEventListener('input', () => {
+    if (skuCheckTimeout) clearTimeout(skuCheckTimeout);
+    
+    const sku = formSku.value.trim().toUpperCase();
+    if (!sku) {
+      skuValidationMsg.classList.add('hidden');
+      saveBtn.disabled = false;
+      return;
+    }
+    
+    skuValidationMsg.textContent = 'Checking availability...';
+    skuValidationMsg.className = 'text-[10px] font-semibold mt-1 text-slate-505 dark:text-slate-400 block';
+    skuValidationMsg.classList.remove('hidden');
+    saveBtn.disabled = true;
+    
+    skuCheckTimeout = setTimeout(async () => {
+      try {
+        const id = formId.value;
+        const res = await clovasApi.checkSkuAvailability(sku, id);
+        if (res.available) {
+          skuValidationMsg.textContent = '✓ Code is available!';
+          skuValidationMsg.className = 'text-[10px] font-semibold mt-1 text-emerald-500 block';
+          saveBtn.disabled = false;
+        } else {
+          skuValidationMsg.textContent = '✗ Code already taken by another product.';
+          skuValidationMsg.className = 'text-[10px] font-semibold mt-1 text-red-500 block';
+          saveBtn.disabled = true;
+        }
+      } catch (err) {
+        skuValidationMsg.textContent = 'Failed to check code availability.';
+        skuValidationMsg.className = 'text-[10px] font-semibold mt-1 text-amber-500 block';
+        saveBtn.disabled = false;
+      }
+    }, 400);
+  });
+
   // Submit Product Form (Create/Update)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const id = formId.value;
     const productData = {
+      sku: formSku.value.trim().toUpperCase(),
       title: formTitle.value.trim(),
       description: formDesc.value.trim(),
       price: Number(formPrice.value),
@@ -299,7 +370,32 @@ export const initOrdersPanel = async () => {
   const rowsContainer = document.getElementById('admin-orders-rows');
 
   const loadAdminOrders = () => {
-    rowsContainer.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500">Loading order receipts...</td></tr>';
+    const orderSkeleton = `
+      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
+        <td class="p-4 pl-6">
+          <div class="h-4 w-28 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-32 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-24 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-16 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-20 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-6 w-16 rounded-full shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4 pr-6 text-right">
+          <div class="inline-block h-8 w-24 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+      </tr>
+    `;
+    rowsContainer.innerHTML = orderSkeleton.repeat(4);
 
     clovasApi.adminGetOrders()
       .then(orders => {
@@ -385,7 +481,26 @@ export const initCouponsPanel = async () => {
   const form = document.getElementById('coupon-form');
 
   const loadAdminCoupons = () => {
-    rowsContainer.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Loading coupons...</td></tr>';
+    const couponSkeleton = `
+      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
+        <td class="p-4">
+          <div class="h-4 w-20 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-16 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-16 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-24 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4 text-right">
+          <div class="inline-block h-8 w-16 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+      </tr>
+    `;
+    rowsContainer.innerHTML = couponSkeleton.repeat(3);
 
     clovasApi.adminGetCoupons()
       .then(coupons => {
@@ -410,8 +525,8 @@ export const initCouponsPanel = async () => {
           `;
 
           // Delete Action
-          tr.querySelector('.del-coupon-btn').addEventListener('click', async () => {
-            if (confirm(`Remove coupon code ${coupon.code}?`)) {
+          tr.querySelector('.del-coupon-btn').addEventListener('click', () => {
+            showConfirm(`Remove coupon code ${coupon.code}?`, async () => {
               try {
                 await clovasApi.adminDeleteCoupon(coupon._id);
                 showToast('Coupon removed.');
@@ -419,12 +534,25 @@ export const initCouponsPanel = async () => {
               } catch (e) {
                 showToast(e.message, 'error');
               }
-            }
+            });
           });
 
           rowsContainer.appendChild(tr);
         });
       });
+  };
+
+  // Helper to set default 7-day expiry date
+  const set7DayDefaultExpiry = () => {
+    const expiryInput = document.getElementById('coupon-expiry');
+    if (expiryInput) {
+      const defaultExpiry = new Date();
+      defaultExpiry.setDate(defaultExpiry.getDate() + 7);
+      const yyyy = defaultExpiry.getFullYear();
+      const mm = String(defaultExpiry.getMonth() + 1).padStart(2, '0');
+      const dd = String(defaultExpiry.getDate()).padStart(2, '0');
+      expiryInput.value = `${yyyy}-${mm}-${dd}`;
+    }
   };
 
   // Submit Add Coupon Form
@@ -446,11 +574,132 @@ export const initCouponsPanel = async () => {
       });
       showToast('Promo coupon created successfully!');
       form.reset();
+      set7DayDefaultExpiry();
       loadAdminCoupons();
     } catch (err) {
       showToast(err.message, 'error');
     }
   });
 
+  // Set default on load
+  set7DayDefaultExpiry();
   loadAdminCoupons();
 };
+
+// --- Panel 5: Registered Shoppers Management Panel ---
+export const initShoppersPanel = async () => {
+  const user = await verifyAdminAccess();
+  if (!user) return;
+
+  const rowsContainer = document.getElementById('admin-shoppers-rows');
+  const searchInput = document.getElementById('admin-shopper-search');
+  const totalCountEl = document.getElementById('admin-shoppers-count');
+
+  let allUsers = [];
+
+  const loadShoppers = () => {
+    // Premium shimmer loader
+    const userSkeleton = `
+      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
+        <td class="p-4 pl-6">
+          <div class="h-4 w-32 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-40 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-28 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-6 w-16 rounded-full shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4 pr-6 text-right">
+          <div class="inline-block h-8 w-24 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+      </tr>
+    `;
+    rowsContainer.innerHTML = userSkeleton.repeat(4);
+
+    clovasApi.adminGetUsers()
+      .then(users => {
+        allUsers = users;
+        renderShoppers(users);
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      });
+  };
+
+  const renderShoppers = (usersList) => {
+    rowsContainer.innerHTML = '';
+    totalCountEl.textContent = usersList.length;
+
+    if (usersList.length === 0) {
+      rowsContainer.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-semibold">No shoppers found.</td></tr>';
+      return;
+    }
+
+    usersList.forEach(shopper => {
+      const regDate = new Date(shopper.createdAt).toLocaleDateString();
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors';
+      
+      const roleBadge = shopper.role === 'admin' 
+        ? `<span class="px-2.5 py-1 bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 rounded-full text-[10px] uppercase font-bold tracking-wider">Admin</span>`
+        : `<span class="px-2.5 py-1 bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 rounded-full text-[10px] uppercase font-bold tracking-wider">Shopper</span>`;
+
+      tr.innerHTML = `
+        <td class="p-4 pl-6 font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <div class="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-850 flex items-center justify-center font-bold text-slate-600 dark:text-slate-350">
+            ${shopper.name ? shopper.name.charAt(0).toUpperCase() : 'U'}
+          </div>
+          <span>${shopper.name || 'Anonymous User'}</span>
+        </td>
+        <td class="p-4 text-slate-550">${shopper.email}</td>
+        <td class="p-4 text-slate-500">${regDate}</td>
+        <td class="p-4">${roleBadge}</td>
+        <td class="p-4 pr-6 text-right">
+          <button class="role-toggle-btn px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-850 text-xs transition-colors" data-id="${shopper._id}" data-role="${shopper.role}">
+            Toggle Role
+          </button>
+        </td>
+      `;
+
+      // Event Listener for toggling roles
+      tr.querySelector('.role-toggle-btn').addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        const currentRole = e.target.getAttribute('data-role');
+        const newRole = currentRole === 'admin' ? 'user' : 'admin';
+        
+        showConfirm(`Are you sure you want to change this user's role to ${newRole.toUpperCase()}?`, async () => {
+          try {
+            await clovasApi.adminUpdateUserRole(id, newRole);
+            showToast('User access role updated.');
+            loadShoppers();
+          } catch (err) {
+            showToast(err.message, 'error');
+          }
+        });
+      });
+
+      rowsContainer.appendChild(tr);
+    });
+  };
+
+  // Search filter keyup listener
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim().toLowerCase();
+    if (!val) {
+      renderShoppers(allUsers);
+      return;
+    }
+    const filtered = allUsers.filter(u => 
+      (u.name && u.name.toLowerCase().includes(val)) || 
+      (u.email && u.email.toLowerCase().includes(val))
+    );
+    renderShoppers(filtered);
+  });
+
+  loadShoppers();
+};
+

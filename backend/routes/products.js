@@ -11,6 +11,45 @@ const { adminOnly } = require('../middleware/admin');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+// Helper to generate a unique SKU
+const generateUniqueSKU = async (category) => {
+  const prefix = "CLV";
+  const cat = (category || "GEN").substring(0, 3).toUpperCase();
+  
+  let isUnique = false;
+  let sku = "";
+  
+  while (!isUnique) {
+    const randomNum = Math.floor(10000 + Math.random() * 90000); // 5-digit number
+    sku = `${prefix}-${cat}-${randomNum}`;
+    const exists = await Product.findOne({ sku });
+    if (!exists) {
+      isUnique = true;
+    }
+  }
+  return sku;
+};
+
+// Auto-migration script to fill missing SKUs in database
+const runSKUMigration = async () => {
+  try {
+    const products = await Product.find({ sku: { $exists: false } });
+    if (products.length > 0) {
+      console.log(`[Migration] Found ${products.length} products missing a SKU. Generating...`);
+      for (const prod of products) {
+        prod.sku = await generateUniqueSKU(prod.category);
+        await prod.save();
+      }
+      console.log(`[Migration] SKU migration completed successfully.`);
+    }
+  } catch (err) {
+    console.error(`[Migration Error] Failed to migrate missing SKUs:`, err);
+  }
+};
+
+// Run migration asynchronously after a brief timeout
+setTimeout(runSKUMigration, 1500);
+
 // @desc    Get all products with filters
 // @route   GET /api/products
 // @access  Public
@@ -33,6 +72,7 @@ router.get('/', async (req, res) => {
     // Apply Search
     if (search) {
       query.$or = [
+        { sku: { $regex: search, $options: 'i' } },
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } }
       ];
@@ -104,6 +144,28 @@ router.get('/highlights', async (req, res) => {
     const flashSale = await Product.find({ 'flashSale.isFlashSale': true }).limit(8);
 
     res.json({ featured, trending, bestSellers, newArrivals, flashSale });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Check if a SKU is available
+// @route   GET /api/products/check-sku
+// @access  Private (Admin Only)
+router.get('/check-sku', protect, adminOnly, async (req, res) => {
+  try {
+    const { sku, excludeId } = req.query;
+    if (!sku) {
+      return res.status(400).json({ message: 'SKU parameter is required' });
+    }
+
+    const query = { sku: sku.trim().toUpperCase() };
+    if (excludeId) {
+      query._id = { $ne: excludeId };
+    }
+
+    const exists = await Product.findOne(query);
+    res.json({ available: !exists });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -222,6 +284,7 @@ router.post('/upload', protect, adminOnly, upload.single('image'), async (req, r
 router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const {
+      sku,
       title,
       description,
       price,
@@ -238,7 +301,18 @@ router.post('/', protect, adminOnly, async (req, res) => {
       flashSale
     } = req.body;
 
+    let finalSku = sku ? sku.trim().toUpperCase() : '';
+    if (!finalSku) {
+      finalSku = await generateUniqueSKU(category);
+    } else {
+      const exists = await Product.findOne({ sku: finalSku });
+      if (exists) {
+        return res.status(400).json({ message: `Product Code/SKU '${finalSku}' is already taken.` });
+      }
+    }
+
     const product = new Product({
+      sku: finalSku,
       title,
       description,
       price,
@@ -270,7 +344,17 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
-      Object.assign(product, req.body);
+      if (req.body.sku) {
+        const finalSku = req.body.sku.trim().toUpperCase();
+        if (finalSku !== product.sku) {
+          const exists = await Product.findOne({ sku: finalSku });
+          if (exists) {
+            return res.status(400).json({ message: `Product Code/SKU '${finalSku}' is already taken.` });
+          }
+          product.sku = finalSku;
+        }
+      }
+      Object.assign(product, { ...req.body, sku: product.sku });
       const updatedProduct = await product.save();
       res.json(updatedProduct);
     } else {

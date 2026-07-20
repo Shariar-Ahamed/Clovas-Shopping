@@ -502,7 +502,11 @@ const clovasApi = {
 
       if (params.search) {
         const s = params.search.toLowerCase();
-        filtered = filtered.filter(p => p.title.toLowerCase().includes(s) || p.description.toLowerCase().includes(s));
+        filtered = filtered.filter(p => 
+          (p.sku && p.sku.toLowerCase().includes(s)) ||
+          p.title.toLowerCase().includes(s) || 
+          p.description.toLowerCase().includes(s)
+        );
       }
 
       if (params.gender && params.gender !== 'All') {
@@ -742,6 +746,42 @@ const clovasApi = {
     const updated = { ...current, ...settings };
     localStorage.setItem('mock_config', JSON.stringify(updated));
     return updated;
+  }),
+
+  checkSkuAvailability: (sku, excludeId) => requestWithMock('/products/check-sku?sku=' + encodeURIComponent(sku) + (excludeId ? '&excludeId=' + excludeId : ''), {}, () => {
+    const products = JSON.parse(localStorage.getItem('mock_products') || '[]');
+    const upperSku = sku.trim().toUpperCase();
+    const exists = products.find(p => p.sku === upperSku && p._id !== excludeId);
+    return { available: !exists };
+  }),
+
+  adminGetUsers: () => requestWithMock('/admin/users', {}, () => {
+    // Generate some mock users if running completely client-side in sandbox
+    const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+    if (mockUsers.length === 0) {
+      const initialUsers = [
+        { _id: 'mock-u-1', name: 'Clovas Super Admin', email: 'clovas.verify@gmail.com', role: 'admin', createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString() },
+        { _id: 'mock-u-2', name: 'Shariar Ahamed', email: 'shariar@clovas.com', role: 'user', createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
+        { _id: 'mock-u-3', name: 'Tahmid Hasan', email: 'tahmid.h@gmail.com', role: 'user', createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+      ];
+      localStorage.setItem('mock_users', JSON.stringify(initialUsers));
+      return initialUsers;
+    }
+    return mockUsers;
+  }),
+
+  adminUpdateUserRole: (id, role) => requestWithMock('/admin/users/' + id + '/role', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role })
+  }, () => {
+    const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+    const user = mockUsers.find(u => u._id === id);
+    if (user) {
+      user.role = role;
+      localStorage.setItem('mock_users', JSON.stringify(mockUsers));
+    }
+    return { message: 'User role updated successfully', user };
   }),
 };
 

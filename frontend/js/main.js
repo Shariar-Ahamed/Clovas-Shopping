@@ -130,6 +130,49 @@ export const dismissAllToasts = () => {
   }
 };
 
+export const showConfirm = (message, callback) => {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm transition-all duration-300 opacity-0';
+  
+  overlay.innerHTML = `
+    <div class="w-full max-w-sm bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-2xl m-4 transform scale-95 transition-all duration-300 opacity-0">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="p-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <h3 class="font-serif text-base font-bold text-slate-800 dark:text-white">Are you sure?</h3>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">${message}</p>
+      <div class="flex justify-end gap-3 text-xs">
+        <button id="confirm-cancel-btn" class="px-4 py-2.5 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
+        <button id="confirm-ok-btn" class="px-4 py-2.5 font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition-colors">Yes, Delete</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  
+  setTimeout(() => {
+    overlay.classList.remove('opacity-0');
+    overlay.querySelector('div').classList.remove('opacity-0', 'scale-95');
+  }, 10);
+  
+  const closeModal = (confirmed) => {
+    overlay.classList.add('opacity-0');
+    overlay.querySelector('div').classList.add('opacity-0', 'scale-95');
+    setTimeout(() => {
+      overlay.remove();
+      if (confirmed) callback();
+    }, 300);
+  };
+  
+  overlay.querySelector('#confirm-cancel-btn').addEventListener('click', () => closeModal(false));
+  overlay.querySelector('#confirm-ok-btn').addEventListener('click', () => closeModal(true));
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal(false);
+  });
+};
+
 const createToastContainer = () => {
   const container = document.createElement('div');
   container.id = 'toast-container';

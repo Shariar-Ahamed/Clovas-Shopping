@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const productThumbnails = document.getElementById('product-thumbnails');
   const productCategory = document.getElementById('product-category');
   const stockBadge = document.getElementById('stock-badge');
+  const productSkuBadge = document.getElementById('product-sku-badge');
   const productTitle = document.getElementById('product-title');
   const ratingStars = document.getElementById('rating-stars');
   const ratingValue = document.getElementById('rating-value');
@@ -92,6 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
         productCategory.textContent = `${prod.category} • ${prod.subCategory}`;
         productTitle.textContent = prod.title;
         productDesc.textContent = prod.description;
+        if (productSkuBadge) {
+          productSkuBadge.textContent = `CODE: ${prod.sku || 'N/A'}`;
+        }
 
         // Stock badge
         if (prod.stock > 0) {
