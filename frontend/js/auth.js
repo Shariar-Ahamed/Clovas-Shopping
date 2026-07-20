@@ -4,8 +4,8 @@ import { showToast } from './main.js';
 document.addEventListener('DOMContentLoaded', () => {
   const authTitle = document.getElementById('auth-title');
   const authSubtitle = document.getElementById('auth-subtitle');
-  const errorAlert = document.getElementById('auth-error-alert');
-  const errorMessage = document.getElementById('auth-error-message');
+  let errorAlert = document.getElementById('auth-error-alert');
+  let errorMessage = document.getElementById('auth-error-message');
 
   const loginForm = document.getElementById('login-form');
   const registerForm = document.getElementById('register-form');
@@ -102,6 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Toggle Forms
   const switchMode = (mode) => {
     currentMode = mode;
+    
+    if (mode === 'login') {
+      errorAlert = document.getElementById('auth-error-alert');
+      errorMessage = document.getElementById('auth-error-message');
+    } else if (mode === 'register') {
+      errorAlert = document.getElementById('register-error-alert');
+      errorMessage = document.getElementById('register-error-message');
+    } else if (mode === 'forgot') {
+      errorAlert = document.getElementById('forgot-error-alert');
+      errorMessage = document.getElementById('forgot-error-message');
+    }
+
     hideError();
 
     // Reset OTP mode when switching between forms
