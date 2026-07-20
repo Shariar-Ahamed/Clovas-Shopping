@@ -595,6 +595,21 @@ export const initShoppersPanel = async () => {
   const searchInput = document.getElementById('admin-shopper-search');
   const totalCountEl = document.getElementById('admin-shoppers-count');
 
+  // Modal elements
+  const modal = document.getElementById('shopper-modal');
+  const closeModalBtn = document.getElementById('close-shopper-modal');
+  const mAvatar = document.getElementById('modal-shopper-avatar');
+  const mName = document.getElementById('modal-shopper-name');
+  const mRole = document.getElementById('modal-shopper-role');
+  const mUsername = document.getElementById('modal-shopper-username');
+  const mEmail = document.getElementById('modal-shopper-email');
+  const mPhone = document.getElementById('modal-shopper-phone');
+  const mJoined = document.getElementById('modal-shopper-joined');
+  const mAddresses = document.getElementById('modal-shopper-addresses');
+  const mCartCount = document.getElementById('modal-shopper-cart-count');
+  const mCartList = document.getElementById('modal-shopper-cart-list');
+  const mOrdersList = document.getElementById('modal-shopper-orders-list');
+
   let allUsers = [];
 
   const loadShoppers = () => {
@@ -602,13 +617,17 @@ export const initShoppersPanel = async () => {
     const userSkeleton = `
       <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
         <td class="p-4 pl-6">
-          <div class="h-4 w-32 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+          <div class="h-4 w-6 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
         </td>
-        <td class="p-4">
-          <div class="h-4 w-40 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
+        <td class="p-4 flex items-center gap-3">
+          <div class="h-8 w-8 rounded-full shimmer bg-slate-200 dark:bg-slate-800"></div>
           <div class="h-4 w-28 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-36 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
+        </td>
+        <td class="p-4">
+          <div class="h-4 w-24 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
         </td>
         <td class="p-4">
           <div class="h-6 w-16 rounded-full shimmer bg-slate-200 dark:bg-slate-800"></div>
@@ -622,8 +641,13 @@ export const initShoppersPanel = async () => {
 
     clovasApi.adminGetUsers()
       .then(users => {
-        allUsers = users;
-        renderShoppers(users);
+        // Sort: admins first, then by date created descending
+        allUsers = [...users].sort((a, b) => {
+          if (a.role === 'admin' && b.role !== 'admin') return -1;
+          if (a.role !== 'admin' && b.role === 'admin') return 1;
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        renderShoppers(allUsers);
       })
       .catch(err => {
         showToast(err.message, 'error');
@@ -635,21 +659,22 @@ export const initShoppersPanel = async () => {
     totalCountEl.textContent = usersList.length;
 
     if (usersList.length === 0) {
-      rowsContainer.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500 font-semibold">No shoppers found.</td></tr>';
+      rowsContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-500 font-semibold">No shoppers found.</td></tr>';
       return;
     }
 
-    usersList.forEach(shopper => {
+    usersList.forEach((shopper, index) => {
       const regDate = new Date(shopper.createdAt).toLocaleDateString();
       const tr = document.createElement('tr');
-      tr.className = 'border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors';
+      tr.className = 'border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors cursor-pointer';
       
       const roleBadge = shopper.role === 'admin' 
         ? `<span class="px-2.5 py-1 bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 rounded-full text-[10px] uppercase font-bold tracking-wider">Admin</span>`
         : `<span class="px-2.5 py-1 bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 rounded-full text-[10px] uppercase font-bold tracking-wider">Shopper</span>`;
 
       tr.innerHTML = `
-        <td class="p-4 pl-6 font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <td class="p-4 pl-6 text-slate-400 font-mono font-bold">${index + 1}</td>
+        <td class="p-4 font-bold text-slate-800 dark:text-white flex items-center gap-2">
           <div class="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-850 flex items-center justify-center font-bold text-slate-600 dark:text-slate-350">
             ${shopper.name ? shopper.name.charAt(0).toUpperCase() : 'U'}
           </div>
@@ -659,14 +684,15 @@ export const initShoppersPanel = async () => {
         <td class="p-4 text-slate-500">${regDate}</td>
         <td class="p-4">${roleBadge}</td>
         <td class="p-4 pr-6 text-right">
-          <button class="role-toggle-btn px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-850 text-xs transition-colors" data-id="${shopper._id}" data-role="${shopper.role}">
+          <button class="role-toggle-btn px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-150 dark:hover:bg-slate-850 text-xs transition-colors" data-id="${shopper._id}" data-role="${shopper.role}">
             Toggle Role
           </button>
         </td>
       `;
 
-      // Event Listener for toggling roles
+      // Prevent modal opening when clicking action button
       tr.querySelector('.role-toggle-btn').addEventListener('click', async (e) => {
+        e.stopPropagation();
         const id = e.target.getAttribute('data-id');
         const currentRole = e.target.getAttribute('data-role');
         const newRole = currentRole === 'admin' ? 'user' : 'admin';
@@ -682,9 +708,136 @@ export const initShoppersPanel = async () => {
         });
       });
 
+      // Row click triggers detail profile modal
+      tr.addEventListener('click', () => {
+        openShopperDetailModal(shopper);
+      });
+
       rowsContainer.appendChild(tr);
     });
   };
+
+  const openShopperDetailModal = (shopper) => {
+    // Basic Details
+    mAvatar.textContent = shopper.name ? shopper.name.charAt(0).toUpperCase() : 'U';
+    mName.textContent = shopper.name || 'Anonymous User';
+    mRole.textContent = shopper.role === 'admin' ? 'Admin Access Account' : 'User/Shopper Account';
+    mUsername.textContent = shopper.username || '-';
+    mEmail.textContent = shopper.email || '-';
+    mPhone.textContent = shopper.phone || 'Not provided';
+    mJoined.textContent = new Date(shopper.createdAt).toLocaleDateString() + ' ' + new Date(shopper.createdAt).toLocaleTimeString();
+
+    // Addresses
+    mAddresses.innerHTML = '';
+    if (shopper.addresses && shopper.addresses.length > 0) {
+      shopper.addresses.forEach((addr, i) => {
+        const p = document.createElement('p');
+        p.className = 'bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-100 dark:border-slate-850/50 mt-1';
+        p.innerHTML = `<span class="text-slate-400 font-bold font-mono text-[10px] mr-1.5">ADDR ${i+1}:</span> ${addr.street}, ${addr.city}, ${addr.zip} (${addr.country})`;
+        mAddresses.appendChild(p);
+      });
+    } else {
+      mAddresses.innerHTML = '<p class="text-slate-400 italic font-medium">No address location added yet.</p>';
+    }
+
+    // Cart details
+    const cart = shopper.cart || [];
+    mCartCount.textContent = `${cart.reduce((sum, item) => sum + item.quantity, 0)} items`;
+    mCartList.innerHTML = '';
+    
+    if (cart.length > 0) {
+      let subTotal = 0;
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subTotal += itemTotal;
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-850/50 text-xs font-semibold';
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-8 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 flex-shrink-0">
+              <img src="${item.image}" class="h-full w-full object-cover">
+            </div>
+            <div>
+              <p class="font-bold text-slate-850 dark:text-white line-clamp-1">${item.title}</p>
+              <p class="text-[10px] text-slate-500 font-medium">${item.price} BDT x ${item.quantity}</p>
+            </div>
+          </div>
+          <span class="font-bold text-slate-700 dark:text-slate-350">${itemTotal} BDT</span>
+        `;
+        mCartList.appendChild(div);
+      });
+
+      // Show summary total row
+      const totalRow = document.createElement('div');
+      totalRow.className = 'text-right pt-2 font-extrabold text-xs text-primary-600 dark:text-primary-400';
+      totalRow.innerHTML = `Total Cart Value: ${subTotal} BDT`;
+      mCartList.appendChild(totalRow);
+    } else {
+      mCartList.innerHTML = '<p class="text-xs text-slate-400 italic font-semibold py-2 text-center bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-850/50">Active shopping bag is currently empty.</p>';
+    }
+
+    // Orders History Details
+    mOrdersList.innerHTML = '<p class="text-xs text-slate-500 py-4 text-center">Loading orders...</p>';
+    clovasApi.adminGetOrders()
+      .then(orders => {
+        // Filter orders by this shopper
+        // Try matching shopper ID or shopper email
+        const userOrders = orders.filter(o => 
+          (o.user && o.user._id === shopper._id) || 
+          (o.shippingAddress && o.shippingAddress.email && o.shippingAddress.email.toLowerCase() === shopper.email.toLowerCase())
+        );
+
+        mOrdersList.innerHTML = '';
+        if (userOrders.length > 0) {
+          userOrders.forEach(o => {
+            const dateStr = new Date(o.createdAt).toLocaleDateString();
+            const div = document.createElement('div');
+            div.className = 'p-3.5 rounded-xl border border-slate-100 dark:border-slate-850/60 bg-slate-50 dark:bg-slate-900/40 text-xs space-y-2';
+            
+            const payBadge = o.paymentStatus === 'Paid'
+              ? `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 rounded text-[9px] font-bold uppercase tracking-wider">Paid</span>`
+              : `<span class="px-2 py-0.5 bg-yellow-50 text-yellow-600 dark:bg-yellow-950/40 dark:text-yellow-400 rounded text-[9px] font-bold uppercase tracking-wider">${o.paymentStatus}</span>`;
+
+            const itemsText = o.items.map(i => `<span class="font-bold text-slate-700 dark:text-slate-350">${i.title}</span> (x${i.quantity})`).join(', ');
+
+            div.innerHTML = `
+              <div class="flex justify-between items-center text-[10px] font-bold uppercase text-slate-400">
+                <span>TXN: ${o.transactionId}</span>
+                <span>${dateStr}</span>
+              </div>
+              <div class="text-[11px] font-semibold text-slate-550 dark:text-slate-300">
+                <span class="text-slate-400 font-medium">Items:</span> ${itemsText}
+              </div>
+              <div class="flex justify-between items-center pt-1.5 border-t border-slate-100 dark:border-slate-850/50">
+                <span class="font-extrabold text-slate-800 dark:text-white">Amount: ${o.totalAmount} BDT</span>
+                <div class="flex items-center gap-2">
+                  ${payBadge}
+                  <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-850 text-slate-600 dark:text-slate-300 rounded text-[9px] font-bold uppercase tracking-wider">${o.orderStatus}</span>
+                </div>
+              </div>
+            `;
+            mOrdersList.appendChild(div);
+          });
+        } else {
+          mOrdersList.innerHTML = '<p class="text-xs text-slate-400 italic font-semibold py-2 text-center bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-850/50">No purchase records found.</p>';
+        }
+      })
+      .catch(err => {
+        mOrdersList.innerHTML = `<p class="text-xs text-red-500 py-2 text-center">Failed to load order history: ${err.message}</p>`;
+      });
+
+    // Toggle hidden modal class
+    modal.classList.remove('hidden');
+  };
+
+  // Close modal binding
+  closeModalBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
 
   // Search filter keyup listener
   searchInput.addEventListener('input', (e) => {

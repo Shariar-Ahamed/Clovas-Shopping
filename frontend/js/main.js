@@ -11,6 +11,18 @@ export const getCart = () => {
 export const saveCart = (cart) => {
   localStorage.setItem(cartKey, JSON.stringify(cart));
   updateCartBadge();
+  syncCartToDatabase(cart);
+};
+
+const syncCartToDatabase = async (cart) => {
+  const user = await clovasAuth.getCurrentUser();
+  if (user) {
+    try {
+      await clovasApi.syncUserCart(cart);
+    } catch (err) {
+      console.warn('Failed to sync cart:', err.message);
+    }
+  }
 };
 
 export const addToCart = (product, quantity = 1) => {
@@ -55,6 +67,7 @@ export const removeFromCart = (productId) => {
 export const clearCart = () => {
   localStorage.removeItem(cartKey);
   updateCartBadge();
+  syncCartToDatabase([]);
 };
 
 export const getCartTotal = () => {

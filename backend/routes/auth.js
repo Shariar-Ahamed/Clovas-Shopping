@@ -98,6 +98,24 @@ router.delete('/address/:addressId', protect, async (req, res) => {
   }
 });
 
+// @desc    Sync user shopping cart to MongoDB
+// @route   POST /api/auth/cart
+// @access  Private
+router.post('/cart', protect, async (req, res) => {
+  try {
+    const { cart } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.cart = cart;
+    await user.save();
+    res.json({ message: 'Cart synced successfully', cart: user.cart });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Send OTP to email
 // @route   POST /api/auth/send-otp
 // @access  Public
