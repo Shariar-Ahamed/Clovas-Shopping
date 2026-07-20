@@ -24,10 +24,26 @@ router.post('/sync', protect, async (req, res) => {
 // @access  Private
 router.put('/profile', protect, async (req, res) => {
   try {
-    const { name, phone } = req.body;
+    const { name, phone, username } = req.body;
     const user = await User.findById(req.user._id);
 
     if (user) {
+      if (username) {
+        const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '');
+        if (cleanUsername.length < 3) {
+          return res.status(400).json({ message: 'Username must be at least 3 characters and contain only alphanumeric characters, underscores, or dots.' });
+        }
+        
+        // Check if username is already taken by another user
+        if (cleanUsername !== user.username) {
+          const existing = await User.findOne({ username: cleanUsername });
+          if (existing) {
+            return res.status(400).json({ message: 'Username is already taken' });
+          }
+          user.username = cleanUsername;
+        }
+      }
+
       user.name = name || user.name;
       user.phone = phone || user.phone;
 

@@ -1,6 +1,35 @@
 const { admin } = require('../config/firebase-admin');
 const User = require('../models/User');
 
+const generateUniqueUsername = async (email, name) => {
+  let base = (email ? email.split('@')[0] : name)
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+  
+  if (!base) base = 'user';
+  
+  let username = base;
+  let isUnique = false;
+  let attempts = 0;
+  
+  while (!isUnique && attempts < 10) {
+    const existing = await User.findOne({ username });
+    if (!existing) {
+      isUnique = true;
+    } else {
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      username = `${base}${randomSuffix}`;
+      attempts++;
+    }
+  }
+  
+  if (!isUnique) {
+    username = `${base}${Date.now()}`;
+  }
+  
+  return username;
+};
+
 const protect = async (req, res, next) => {
   let token;
 
@@ -15,9 +44,13 @@ const protect = async (req, res, next) => {
           adminUser = await User.create({
             firebaseUid: 'mock-admin-uid',
             email: 'admin@clovas.com',
+            username: 'admin',
             name: 'Mock Admin',
             role: 'admin'
           });
+        } else if (!adminUser.username) {
+          adminUser.username = 'admin';
+          await adminUser.save();
         }
         req.user = adminUser;
         return next();
@@ -30,9 +63,13 @@ const protect = async (req, res, next) => {
           normalUser = await User.create({
             firebaseUid: `mock-user-uid-${userId}`,
             email: `user-${userId}@clovas.com`,
+            username: `user${userId}`,
             name: `Mock User ${userId}`,
             role: 'user'
           });
+        } else if (!normalUser.username) {
+          normalUser.username = `user${userId}`;
+          await normalUser.save();
         }
         req.user = normalUser;
         return next();
@@ -61,10 +98,13 @@ const protect = async (req, res, next) => {
       let user = await User.findOne({ firebaseUid: decodedToken.uid });
       
       if (!user) {
+        const username = await generateUniqueUsername(decodedToken.email, decodedToken.name);
+
         // If they are in Firebase but not in MDB, we create a basic record
         user = await User.create({
           firebaseUid: decodedToken.uid,
           email: decodedToken.email || '',
+          username,
           name: decodedToken.name || decodedToken.email?.split('@')[0] || 'User',
           role: 'user'
         });
@@ -81,6 +121,9 @@ const protect = async (req, res, next) => {
         } catch (err) {
           console.warn('Welcome notification creation failed:', err.message);
         }
+      } else if (!user.username) {
+        user.username = await generateUniqueUsername(user.email, user.name);
+        await user.save();
       }
 
       req.user = user;

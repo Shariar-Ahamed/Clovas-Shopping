@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const profileDetailsForm = document.getElementById('profile-details-form');
   const profileName = document.getElementById('profile-name');
   const profilePhone = document.getElementById('profile-phone');
+  const profileUsername = document.getElementById('profile-username');
   const addressBookList = document.getElementById('address-book-list');
   const addAddressForm = document.getElementById('add-address-form');
 
@@ -267,6 +268,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       .then(profile => {
         profileName.value = profile.name || '';
         profilePhone.value = profile.phone || '';
+        if (profileUsername) profileUsername.value = profile.username || '';
+
+        // Update display elements in sidebar
+        const sidebarName = document.getElementById('user-display-name');
+        const sidebarEmail = document.getElementById('user-display-email');
+        if (sidebarName) sidebarName.textContent = profile.name;
+        if (sidebarEmail && profile.username) {
+          sidebarEmail.innerHTML = `${profile.email}<br><span class="text-[9px] text-primary-500 font-bold mt-1 block">@${profile.username}</span>`;
+        }
 
         renderAddresses(profile.addresses || []);
       })
@@ -314,12 +324,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const updated = await clovasApi.updateProfile({
         name: profileName.value.trim(),
-        phone: profilePhone.value.trim()
+        phone: profilePhone.value.trim(),
+        username: profileUsername ? profileUsername.value.trim() : ''
       });
       showToast('Profile updated successfully!');
       
       // Update display name metadata in sidebar
       document.getElementById('user-display-name').textContent = updated.name;
+      const sidebarEmail = document.getElementById('user-display-email');
+      if (sidebarEmail && updated.username) {
+        sidebarEmail.innerHTML = `${updated.email}<br><span class="text-[9px] text-primary-500 font-bold mt-1 block">@${updated.username}</span>`;
+      }
     } catch (error) {
       showToast(error.message, 'error');
     }

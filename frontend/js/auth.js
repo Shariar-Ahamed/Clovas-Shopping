@@ -44,8 +44,38 @@ document.addEventListener('DOMContentLoaded', () => {
   let isOtpMode = false;
   let countdownInterval = null;
 
+  const mapFirebaseError = (error) => {
+    if (!error) return 'An error occurred during authentication.';
+    let message = typeof error === 'string' ? error : (error.message || '');
+    let code = typeof error === 'object' && error.code ? error.code : '';
+    
+    if (!code && message.includes('(') && message.includes(')')) {
+      code = message.split('(')[1].split(')')[0];
+    }
+    
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+        return 'Incorrect email or password. Please try again.';
+      case 'auth/email-already-in-use':
+        return 'This email address is already in use by another account.';
+      case 'auth/weak-password':
+        return 'Password should be at least 6 characters.';
+      case 'auth/invalid-email':
+        return 'The email address is badly formatted.';
+      case 'auth/too-many-requests':
+        return 'Too many login attempts. Access to this account has been temporarily disabled. Please try again later.';
+      default:
+        if (message.startsWith('Firebase:')) {
+          return message.replace(/^Firebase:\s*Error\s*\(auth\/[a-zA-Z-]+\)\.?\s*/i, '').trim();
+        }
+        return message;
+    }
+  };
+
   const showError = (msg) => {
-    errorMessage.textContent = msg;
+    errorMessage.textContent = mapFirebaseError(msg);
     errorAlert.classList.remove('hidden');
   };
 
@@ -54,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const showModalError = (msg) => {
-    modalErrorMessage.textContent = msg;
+    modalErrorMessage.textContent = mapFirebaseError(msg);
     modalErrorAlert.classList.remove('hidden');
   };
 
