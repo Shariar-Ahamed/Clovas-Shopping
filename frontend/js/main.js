@@ -123,6 +123,13 @@ export const showToast = (message, type = 'success') => {
   }, 3200);
 };
 
+export const dismissAllToasts = () => {
+  const container = document.getElementById('toast-container');
+  if (container) {
+    container.innerHTML = '';
+  }
+};
+
 const createToastContainer = () => {
   const container = document.createElement('div');
   container.id = 'toast-container';

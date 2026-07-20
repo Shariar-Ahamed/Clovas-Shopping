@@ -1,5 +1,5 @@
 import clovasAuth from './firebase-config.js';
-import { showToast } from './main.js';
+import { showToast, dismissAllToasts } from './main.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const authTitle = document.getElementById('auth-title');
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const showError = (msg) => {
+    dismissAllToasts();
     errorMessage.textContent = mapFirebaseError(msg);
     errorAlert.classList.remove('hidden');
   };
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const showModalError = (msg) => {
+    dismissAllToasts();
     modalErrorMessage.textContent = mapFirebaseError(msg);
     modalErrorAlert.classList.remove('hidden');
   };
