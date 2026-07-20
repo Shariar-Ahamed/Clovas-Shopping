@@ -676,6 +676,34 @@ const clovasApi = {
     }
     return mockOrders[oIdx];
   }),
+
+  // Notification Operations
+  getNotifications: () => requestWithMock('/notifications', {}, () => {
+    return JSON.parse(localStorage.getItem('mock_notifications') || JSON.stringify([
+      {
+        _id: "mock-notif-welcome",
+        title: "Welcome to Clovas Shopping!",
+        message: "Use BDT 300 flat discounts using coupon: SUMMER30",
+        type: "account",
+        read: false,
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: "mock-notif-sandbox",
+        title: "Offline Sandbox Active",
+        message: "Test fully interactive checkouts and admin dashboard offline.",
+        type: "promo",
+        read: false,
+        createdAt: new Date().toISOString()
+      }
+    ]));
+  }),
+  markNotificationsAsRead: () => requestWithMock('/notifications/mark-read', { method: 'POST' }, () => {
+    const mock = JSON.parse(localStorage.getItem('mock_notifications') || '[]');
+    mock.forEach(n => n.read = true);
+    localStorage.setItem('mock_notifications', JSON.stringify(mock));
+    return { message: 'All notifications marked as read' };
+  }),
 };
 
 window.clovasApi = clovasApi;

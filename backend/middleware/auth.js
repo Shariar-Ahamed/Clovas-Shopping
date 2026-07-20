@@ -68,6 +68,19 @@ const protect = async (req, res, next) => {
           name: decodedToken.name || decodedToken.email?.split('@')[0] || 'User',
           role: 'user'
         });
+
+        // Trigger welcome notification
+        try {
+          const Notification = require('../models/Notification');
+          await Notification.create({
+            firebaseUid: user.firebaseUid,
+            title: 'Welcome to Clovas Shopping!',
+            message: `Hi ${user.name}! We're thrilled to have you here. Use coupon code SUMMER30 to get BDT 300 discount on your first purchase!`,
+            type: 'account'
+          });
+        } catch (err) {
+          console.warn('Welcome notification creation failed:', err.message);
+        }
       }
 
       req.user = user;

@@ -11,6 +11,29 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Animated Nav Link Underline */
+.nav-link-underline {
+  position: relative;
+}
+
+.nav-link-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -6px; /* Position the line below the text boundary */
+  left: 0;
+  background: linear-gradient(to right, #059669, #3b82f6); /* emerald to blue premium gradient */
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 /* Glassmorphism Classes */
 .glass {
   background: rgba(255, 255, 255, 0.75);
@@ -247,30 +270,129 @@ html {
   transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dotted grid pattern for premium footer background */
 .premium-footer-bg {
-  background-color: #f1f5f9;
-  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+  background-color: #21222c !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
   background-size: 20px 20px;
   position: relative;
+  color: #ffffff !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .premium-footer-bg::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+  background: linear-gradient(to bottom, rgba(33, 34, 44, 0.45), rgba(33, 34, 44, 0)) !important;
   pointer-events: none;
 }
 
+/* Override all child text colors to be white or light grey */
+.premium-footer-bg h4,
+.premium-footer-bg h5,
+.premium-footer-bg span,
+.premium-footer-bg p,
+.premium-footer-bg a,
+.premium-footer-bg div {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Override headings to be bright white */
+.premium-footer-bg h4,
+.premium-footer-bg h5,
+.premium-footer-bg .font-bold,
+.premium-footer-bg span.font-serif {
+  color: #ffffff !important;
+}
+
+/* Trust Badge cards styling */
+.premium-footer-bg .footer-trust-badge {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* Trust Badge icons container background */
+.premium-footer-bg .h-10.w-10 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+}
+
+/* Trust Badge paragraphs */
+.premium-footer-bg .footer-trust-badge p {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Links hover effects */
+.premium-footer-bg a {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.premium-footer-bg a:hover {
+  color: #10b981 !important; /* emerald hover */
+}
+
+/* Newsletter Input styling inside footer */
+.premium-footer-bg input[type="email"] {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  padding: 0 !important;
+}
+.premium-footer-bg input[type="email"]::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+.premium-footer-bg input[type="email"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Social link icons specific override */
+.social-link-btn {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+}
+
+.social-link-btn.facebook-btn:hover {
+  background-color: rgba(24, 119, 242, 0.15) !important;
+  border-color: rgba(24, 119, 242, 0.3) !important;
+  color: #1877f2 !important;
+  transform: translateY(-2px) !important;
+}
+
+.social-link-btn.instagram-btn:hover {
+  background-color: rgba(225, 48, 108, 0.15) !important;
+  border-color: rgba(225, 48, 108, 0.3) !important;
+  color: #e1306c !important;
+  transform: translateY(-2px) !important;
+}
+
+.social-link-btn svg {
+  fill: currentColor !important;
+  color: inherit !important;
+}
+
+/* Footer bottom copyright section border */
+.premium-footer-bg .border-t {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.premium-footer-bg .border-b {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 .dark .premium-footer-bg {
-  background-color: #0f172a;
-  background-image: radial-gradient(#334155 1.2px, transparent 1.2px);
-  background-size: 20px 20px;
+  background-color: #21222c !important;
 }
 
 .dark .premium-footer-bg::before {
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0));
+  background: linear-gradient(to bottom, rgba(33, 34, 44, 0.45), rgba(33, 34, 44, 0)) !important;
 }
 
 /* Scroll Reveal animations (GPU accelerated) */

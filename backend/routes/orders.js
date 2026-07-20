@@ -67,6 +67,20 @@ router.post('/', protect, async (req, res) => {
     });
 
     const createdOrder = await order.save();
+
+    // Create a dynamic notification
+    try {
+      const Notification = require('../models/Notification');
+      await Notification.create({
+        firebaseUid: req.user.firebaseUid,
+        title: 'Order Placed successfully!',
+        message: `Your order for ${orderItems.length} items (Total: ${totalAmount} BDT) has been placed under txn ID ${createdOrder.transactionId}.`,
+        type: 'order'
+      });
+    } catch (err) {
+      console.warn('Failed to generate order placement notification:', err.message);
+    }
+
     res.status(201).json(createdOrder);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -140,6 +154,24 @@ router.put('/:id/status', protect, adminOnly, async (req, res) => {
       }
 
       const updatedOrder = await order.save();
+
+      // Create status update notification
+      try {
+        const User = require('../models/User');
+        const Notification = require('../models/Notification');
+        const targetUser = await User.findById(order.user);
+        if (targetUser) {
+          await Notification.create({
+            firebaseUid: targetUser.firebaseUid,
+            title: `Order Status Updated!`,
+            message: `Your order (Txn: ${order.transactionId}) status is now ${orderStatus || order.orderStatus} (Payment: ${paymentStatus || order.paymentStatus}).`,
+            type: 'order'
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to generate order status update notification:', err.message);
+      }
+
       res.json(updatedOrder);
     } else {
       res.status(404).json({ message: 'Order not found' });

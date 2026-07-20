@@ -33,6 +33,7 @@ app.use('/api/coupons', require('./routes/coupons'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
