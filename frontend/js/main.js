@@ -269,7 +269,7 @@ const injectHeaderAndFooter = async () => {
     clovasAuth.getCurrentUser().then(user => {
       const userActionsContainer = document.getElementById('header-user-actions');
       if (userActionsContainer) {
-        const isAdmin = user && user.email && user.email.includes('admin');
+        const isAdmin = user && user.email && (user.email.includes('admin') || user.email === 'clovas.verify@gmail.com');
         if (user) {
           userActionsContainer.innerHTML = `
             <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-85 transition-opacity">

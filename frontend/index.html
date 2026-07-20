@@ -54,7 +54,7 @@
   </section>
 
   <!-- Flash Sale Timer Section -->
-  <section class="py-5 bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-inner scroll-reveal-bottom">
+  <section id="flash-sale-section" class="py-5 bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-inner scroll-reveal-bottom hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 flex-shrink-0">
@@ -62,7 +62,7 @@
         </div>
         <div>
           <h3 class="text-base font-bold tracking-tight">Flash Sale Live!</h3>
-          <p class="text-xs text-red-100 font-sans mt-0.5">Premium outfits at unbelievable flat discounts.</p>
+          <p id="flash-sale-discount-text" class="text-xs text-red-100 font-sans mt-0.5">Premium outfits at unbelievable flat discounts.</p>
         </div>
       </div>
       <!-- Countdown -->
@@ -418,25 +418,52 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       // Countdown Timer
-      let totalSeconds = 5 * 3600 + 42 * 60 + 9;
       const hoursEl = document.getElementById('timer-hours');
       const minsEl = document.getElementById('timer-mins');
       const secsEl = document.getElementById('timer-secs');
+      const flashSaleSection = document.getElementById('flash-sale-section');
+      const flashSaleDiscountText = document.getElementById('flash-sale-discount-text');
 
-      const timerInterval = setInterval(() => {
-        if (totalSeconds <= 0) {
-          clearInterval(timerInterval);
-          return;
-        }
-        totalSeconds--;
-        const h = Math.floor(totalSeconds / 3600);
-        const m = Math.floor((totalSeconds % 3600) / 60);
-        const s = totalSeconds % 60;
-        
-        hoursEl.textContent = String(h).padStart(2, '0');
-        minsEl.textContent = String(m).padStart(2, '0');
-        secsEl.textContent = String(s).padStart(2, '0');
-      }, 1000);
+      clovasApi.getConfig()
+        .then(config => {
+          if (!config || !config.flashSaleEnabled) {
+            if (flashSaleSection) flashSaleSection.classList.add('hidden');
+            return;
+          }
+
+          if (flashSaleSection) flashSaleSection.classList.remove('hidden');
+          if (flashSaleDiscountText && config.flashSaleDiscountText) {
+            flashSaleDiscountText.textContent = config.flashSaleDiscountText;
+          }
+
+          const endDate = new Date(config.flashSaleEndDate);
+          
+          const updateTimer = () => {
+            const diffMs = endDate - new Date();
+            const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+            
+            if (totalSeconds <= 0) {
+              if (flashSaleSection) flashSaleSection.classList.add('hidden');
+              clearInterval(timerInterval);
+              return;
+            }
+            
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            
+            if (hoursEl) hoursEl.textContent = String(h).padStart(2, '0');
+            if (minsEl) minsEl.textContent = String(m).padStart(2, '0');
+            if (secsEl) secsEl.textContent = String(s).padStart(2, '0');
+          };
+
+          updateTimer();
+          const timerInterval = setInterval(updateTimer, 1000);
+        })
+        .catch(err => {
+          console.error('Failed to load flash sale config:', err);
+          if (flashSaleSection) flashSaleSection.classList.add('hidden');
+        });
 
       // Load Featured Products
       const productsGrid = document.getElementById('featured-products-grid');

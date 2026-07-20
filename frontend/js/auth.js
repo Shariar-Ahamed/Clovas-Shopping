@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(data.message || 'Logged in successfully!');
 
         // If it is admin email, redirect to Admin, else standard home
-        if (email.includes('admin')) {
+        if (email.includes('admin') || email === 'clovas.verify@gmail.com') {
           setTimeout(() => window.location.href = 'admin/index.html', 1000);
         } else {
           setTimeout(() => window.location.href = 'index.html', 1000);
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Logged in successfully!');
         
         // If it is admin email, redirect to Admin, else standard home
-        if (email.includes('admin')) {
+        if (email.includes('admin') || email === 'clovas.verify@gmail.com') {
           setTimeout(() => window.location.href = 'admin/index.html', 1000);
         } else {
           setTimeout(() => window.location.href = 'index.html', 1000);
@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       const delay = showSuccessToastFirst ? 1000 : 0;
       setTimeout(() => {
-        if (user.email && user.email.includes('admin')) {
+        if (user.email && (user.email.includes('admin') || user.email === 'clovas.verify@gmail.com')) {
           window.location.href = 'admin/index.html';
         } else {
           window.location.href = 'index.html';

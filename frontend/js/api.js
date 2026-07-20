@@ -704,6 +704,45 @@ const clovasApi = {
     localStorage.setItem('mock_notifications', JSON.stringify(mock));
     return { message: 'All notifications marked as read' };
   }),
+
+  // Config Settings Operations
+  getConfig: () => requestWithMock('/config', {}, () => {
+    return JSON.parse(localStorage.getItem('mock_config') || JSON.stringify({
+      flashSaleEnabled: true,
+      flashSaleEndDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      flashSaleDiscountText: "Upto 50% Off",
+      shippingFeeStandard: 60,
+      shippingFeeOutside: 120,
+      freeShippingThreshold: 2000,
+      supportPhone: "+880 1700-000000",
+      supportEmail: "support@clovas.com",
+      facebookUrl: "https://facebook.com/clovas",
+      instagramUrl: "https://instagram.com/clovas"
+    }));
+  }),
+  updateConfig: (settings) => requestWithMock('/config', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(settings)
+  }, () => {
+    const current = JSON.parse(localStorage.getItem('mock_config') || JSON.stringify({
+      flashSaleEnabled: true,
+      flashSaleEndDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      flashSaleDiscountText: "Upto 50% Off",
+      shippingFeeStandard: 60,
+      shippingFeeOutside: 120,
+      freeShippingThreshold: 2000,
+      supportPhone: "+880 1700-000000",
+      supportEmail: "support@clovas.com",
+      facebookUrl: "https://facebook.com/clovas",
+      instagramUrl: "https://instagram.com/clovas"
+    }));
+    const updated = { ...current, ...settings };
+    localStorage.setItem('mock_config', JSON.stringify(updated));
+    return updated;
+  }),
 };
 
 window.clovasApi = clovasApi;

@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let discountAmount = 0;
   let appliedCoupon = null;
+  let siteConfig = null;
 
   const renderCart = () => {
     const cart = getCart();
@@ -133,7 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const shipping = subtotal > 5000 ? 0 : 100;
+    const freeShippingLimit = siteConfig ? siteConfig.freeShippingThreshold : 5000;
+    const shippingFee = siteConfig ? siteConfig.shippingFeeStandard : 100;
+    const shipping = subtotal > freeShippingLimit ? 0 : shippingFee;
     summaryShipping.textContent = shipping === 0 ? 'FREE' : `${shipping} BDT`;
 
     const total = Math.max(0, subtotal - discountAmount + shipping);
@@ -213,5 +216,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'checkout.html';
   });
 
-  renderCart();
+  // Load site settings config before rendering cart summary
+  clovasApi.getConfig()
+    .then(config => {
+      siteConfig = config;
+      renderCart();
+    })
+    .catch(err => {
+      console.error('Failed to load site config settings:', err);
+      siteConfig = { freeShippingThreshold: 5000, shippingFeeStandard: 100 };
+      renderCart();
+    });
 });

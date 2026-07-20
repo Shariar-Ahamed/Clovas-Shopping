@@ -6,7 +6,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await clovasAuth.getCurrentUser();
   if (!user) {
     window.location.href = 'auth.html';
-    return;
+  }
+
+  let siteConfig = null;
+  try {
+    siteConfig = await clovasApi.getConfig();
+  } catch (err) {
+    console.error('Failed to load site config:', err);
+    siteConfig = { freeShippingThreshold: 5000, shippingFeeStandard: 100 };
   }
 
   const cart = getCart();
@@ -44,7 +51,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!totals) {
     // Recalculate
     const sub = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-    const ship = sub > 5000 ? 0 : 100;
+    const freeShippingLimit = siteConfig ? siteConfig.freeShippingThreshold : 5000;
+    const shippingFee = siteConfig ? siteConfig.shippingFeeStandard : 100;
+    const ship = sub > freeShippingLimit ? 0 : shippingFee;
     totals = { subtotal: sub, discountAmount: 0, shipping: ship, total: sub + ship, couponCode: '' };
   }
 
