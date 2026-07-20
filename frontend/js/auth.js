@@ -256,16 +256,21 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     hideError();
     const email = loginEmail.value;
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = isOtpMode ? 'Verifying OTP...' : 'Signing In...';
 
     if (isOtpMode) {
       const otp = loginOtp.value;
       if (!otp || otp.length < 6) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
         return showError('Please enter a valid 6-digit OTP code.');
       }
 
       try {
-        showToast('Verifying OTP...', 'success');
-        
         const response = await fetch(`${getApiBaseUrl()}/auth/verify-otp`, {
           method: 'POST',
           headers: {
@@ -292,13 +297,14 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => window.location.href = 'index.html', 1000);
         }
       } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
         showError(error.message);
       }
     } else {
       const password = loginPassword.value;
 
       try {
-        showToast('Signing in...', 'success');
         await clovasAuth.login(email, password);
         showToast('Logged in successfully!');
         
@@ -309,6 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => window.location.href = 'index.html', 1000);
         }
       } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
         showError(error.message);
       }
     }
@@ -416,8 +424,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return showError('Passwords do not match');
     }
 
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
     try {
-      showToast('Sending verification code...', 'success');
       const response = await fetch(`${getApiBaseUrl()}/auth/send-otp`, {
         method: 'POST',
         headers: {
@@ -432,6 +444,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(data.message || 'Failed to send verification code.');
       }
 
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
       showToast('Verification code sent successfully!');
       if (data.mockOtp) {
         console.log(`[MOCK OTP] Code: ${data.mockOtp}`);
@@ -450,6 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
     } catch (error) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
       showError(error.message);
     }
   });
@@ -512,13 +528,20 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     hideError();
     const email = document.getElementById('forgot-email').value;
+    const submitBtn = forgotForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
 
     try {
-      showToast('Sending link...', 'success');
       await clovasAuth.resetPassword(email);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
       showToast('Password reset link sent to your email.');
       switchMode('login');
     } catch (error) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
       showError(error.message);
     }
   });
