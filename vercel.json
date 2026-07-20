@@ -11,7 +11,9 @@
     { "src": "/Home", "dest": "frontend/index.html" },
     { "src": "/css/(.*)", "dest": "frontend/css/$1" },
     { "src": "/js/(.*)", "dest": "frontend/js/$1" },
-    { "src": "/admin/(.*)", "dest": "frontend/admin/$1", "continue": true },
-    { "src": "/(.*)", "dest": "frontend/$1", "continue": true }
+    { "src": "/admin$", "status": 308, "headers": { "Location": "/admin/" } },
+    { "src": "/admin/([^.]+)", "dest": "frontend/admin/$1.html" },
+    { "src": "/admin/(.*)", "dest": "frontend/admin/$1" },
+    { "src": "/(.*)", "dest": "frontend/$1" }
   ]
 }
