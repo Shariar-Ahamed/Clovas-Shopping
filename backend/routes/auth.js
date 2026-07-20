@@ -116,6 +116,24 @@ router.post('/cart', protect, async (req, res) => {
   }
 });
 
+// @desc    Sync user wishlist to MongoDB
+// @route   POST /api/auth/wishlist
+// @access  Private
+router.post('/wishlist', protect, async (req, res) => {
+  try {
+    const { wishlist } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.wishlist = wishlist;
+    await user.save();
+    res.json({ message: 'Wishlist synced successfully', wishlist: user.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Send OTP to email
 // @route   POST /api/auth/send-otp
 // @access  Public

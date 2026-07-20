@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
     price: { type: Number },
     quantity: { type: Number },
     stock: { type: Number }
+  }],
+  wishlist: [{
+    product: { type: String },
+    title: { type: String },
+    image: { type: String },
+    price: { type: Number }
   }]
 }, { timestamps: true });
 

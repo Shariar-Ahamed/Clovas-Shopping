@@ -783,6 +783,47 @@ const clovasApi = {
     }
     return { message: 'User role updated successfully', user };
   }),
+
+  syncUserCart: (cart) => requestWithMock('/auth/cart', {
+    method: 'POST',
+    body: { cart }
+  }, () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (currentUser) {
+      currentUser.cart = cart;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+      const mu = mockUsers.find(u => u.email === currentUser.email);
+      if (mu) {
+        mu.cart = cart;
+        localStorage.setItem('mock_users', JSON.stringify(mockUsers));
+      }
+    }
+    return { success: true };
+  }),
+
+  syncUserWishlist: (wishlist) => requestWithMock('/auth/wishlist', {
+    method: 'POST',
+    body: { wishlist }
+  }, () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (currentUser) {
+      currentUser.wishlist = wishlist;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+      const mu = mockUsers.find(u => u.email === currentUser.email);
+      if (mu) {
+        mu.wishlist = wishlist;
+        localStorage.setItem('mock_users', JSON.stringify(mockUsers));
+      }
+    }
+    return { success: true };
+  }),
+
+  adminGetUserDetails: (id) => requestWithMock('/admin/users/' + id, {}, () => {
+    const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+    return mockUsers.find(u => u._id === id) || mockUsers[0];
+  }),
 };
 
 window.clovasApi = clovasApi;

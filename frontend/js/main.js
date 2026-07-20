@@ -87,19 +87,38 @@ export const getWishlist = () => {
 
 export const toggleWishlist = (product) => {
   let wishlist = getWishlist();
-  const exists = wishlist.some(item => item._id === product._id);
+  const exists = wishlist.some(item => item.product === product._id || item._id === product._id);
   
   if (exists) {
-    wishlist = wishlist.filter(item => item._id !== product._id);
+    wishlist = wishlist.filter(item => item.product !== product._id && item._id !== product._id);
     showToast('Removed from wishlist.');
   } else {
-    wishlist.push(product);
+    const price = product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price;
+    wishlist.push({
+      product: product._id,
+      _id: product._id,
+      title: product.title,
+      image: product.images[0],
+      price: price
+    });
     showToast('Added to wishlist!');
   }
   
   localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
   updateWishlistBadge();
+  syncWishlistToDatabase(wishlist);
   return !exists;
+};
+
+const syncWishlistToDatabase = async (wishlist) => {
+  const user = await clovasAuth.getCurrentUser();
+  if (user) {
+    try {
+      await clovasApi.syncUserWishlist(wishlist);
+    } catch (err) {
+      console.warn('Failed to sync wishlist:', err.message);
+    }
+  }
 };
 
 // --- Toast & UI Helpers ---
@@ -359,7 +378,29 @@ const injectHeaderAndFooter = async () => {
       
       // Silent database sync if user is present
       if (user) {
-        clovasApi.syncUser().catch(e => console.warn('Silent MDB user sync failed:', e.message));
+        clovasApi.syncUser()
+          .then(dbUser => {
+            if (dbUser) {
+              // Sync cart
+              const localCart = JSON.parse(localStorage.getItem('clovas_cart') || '[]');
+              if (localCart.length === 0 && dbUser.cart && dbUser.cart.length > 0) {
+                localStorage.setItem('clovas_cart', JSON.stringify(dbUser.cart));
+                updateCartBadge();
+              } else if (localCart.length > 0) {
+                clovasApi.syncUserCart(localCart).catch(() => {});
+              }
+
+              // Sync wishlist
+              const localWishlist = JSON.parse(localStorage.getItem('clovas_wishlist') || '[]');
+              if (localWishlist.length === 0 && dbUser.wishlist && dbUser.wishlist.length > 0) {
+                localStorage.setItem('clovas_wishlist', JSON.stringify(dbUser.wishlist));
+                updateWishlistBadge();
+              } else if (localWishlist.length > 0) {
+                clovasApi.syncUserWishlist(localWishlist).catch(() => {});
+              }
+            }
+          })
+          .catch(e => console.warn('Silent MDB user sync failed:', e.message));
       }
     });
 

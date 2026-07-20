@@ -82,6 +82,21 @@ router.get('/users', protect, adminOnly, async (req, res) => {
   }
 });
 
+// @desc    Get user details by ID for admin
+// @route   GET /api/admin/users/:id
+// @access  Private (Admin Only)
+router.get('/users/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Update user role
 // @route   PUT /api/admin/users/:id/role
 // @access  Private (Admin Only)
