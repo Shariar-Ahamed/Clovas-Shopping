@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${prod.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-550">
               </a>
               <button class="wishlist-btn absolute top-3 right-3 h-9 w-9 rounded-lg glass flex items-center justify-center text-slate-700 dark:text-slate-350" data-id="${prod._id}">
-                <svg class="h-4.5 w-4.5 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                <svg class="h-5 w-5 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
               </button>
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">

@@ -12,7 +12,11 @@
     tailwind.config = {
       darkMode: 'class',
       theme: {
-        extend: {
+                extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            serif: ['Poppins', 'sans-serif'],
+          },
           colors: {
             primary: {
               50: '#f5f7ff',
@@ -40,7 +44,7 @@
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Browse and filter high-quality hand-stitched outfits and luxury watches</p>
       </div>
       <!-- Breadcrumb -->
-      <div class="text-xs font-semibold uppercase tracking-wider text-slate-450 dark:text-slate-500 flex gap-2">
+      <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex gap-2">
         <a href="index.html" class="hover:text-primary-500">Home</a>
         <span>/</span>
         <span class="text-slate-800 dark:text-white">Shop</span>
@@ -54,7 +58,7 @@
     <!-- Mobile Filter Toggle Button -->
     <div class="flex lg:hidden justify-between items-center w-full mb-6">
       <button id="toggle-filters-btn" class="flex-grow flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-900 text-white font-bold rounded-2xl shadow hover:bg-slate-800 transition-colors text-sm">
-        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
         Show Filters & Sorting
       </button>
     </div>

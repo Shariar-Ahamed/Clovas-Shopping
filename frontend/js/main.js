@@ -166,9 +166,6 @@ const injectHeaderAndFooter = async () => {
   const headerPlaceholder = document.getElementById('header-placeholder');
   const footerPlaceholder = document.getElementById('footer-placeholder');
 
-  const user = await clovasAuth.getCurrentUser();
-  const isAdmin = user && user.email && user.email.includes('admin');
-
   if (headerPlaceholder) {
     headerPlaceholder.innerHTML = `
       <header class="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-150/80 dark:border-slate-850/80 shadow-[0_2px_15px_rgba(0,0,0,0.015)] transition-all duration-300">
@@ -177,7 +174,7 @@ const injectHeaderAndFooter = async () => {
             <!-- Left: Logo -->
             <div class="flex-shrink-0 flex items-center">
               <a href="index.html" class="flex items-center group">
-                <img src="assets/logo.png" alt="Clovas Shopping" class="h-8 w-auto object-contain rounded-md group-hover:scale-105 transition-transform">
+                <img src="assets/logo-removebg.png" alt="Clovas Shopping" class="h-8 w-auto object-contain rounded-md group-hover:scale-105 transition-transform">
               </a>
             </div>
             
@@ -208,13 +205,13 @@ const injectHeaderAndFooter = async () => {
               <!-- Wishlist -->
               <a href="dashboard.html?tab=wishlist" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                <span class="wishlist-count-badge absolute -top-0.5 -right-0.5 h-4.5 w-4.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-900" style="display:none">0</span>
+                <span class="wishlist-count-badge absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-900" style="display:none">0</span>
               </a>
  
               <!-- Cart -->
               <a href="cart.html" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                <span class="cart-count-badge absolute -top-0.5 -right-0.5 h-4.5 w-4.5 rounded-full bg-primary-600 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-900" style="display:none">0</span>
+                <span class="cart-count-badge absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary-600 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-slate-900" style="display:none">0</span>
               </a>
  
               <!-- Notification Bell Dropdown -->
@@ -247,33 +244,57 @@ const injectHeaderAndFooter = async () => {
                   </div>
                 </div>
               </div>
-
+ 
               <!-- Divider -->
               <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
-
+ 
               <!-- Auth/Profile Button -->
-              <div class="flex items-center gap-2">
-                ${user ? `
-                  <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-85 transition-opacity">
-                    <div class="h-9 w-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-350 border border-slate-300 dark:border-slate-700">
-                      ${(user.displayName || user.email || 'U').substring(0, 1).toUpperCase()}
-                    </div>
-                  </a>
-                  ${isAdmin ? `
-                    <a href="admin/index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 font-medium text-xs border border-indigo-200 dark:border-indigo-800/50 hover:bg-indigo-100 dark:hover:bg-indigo-950/50 transition-colors">Admin</a>
-                  ` : ''}
-                  <button id="logout-btn" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors hidden sm:block">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                  </button>
-                ` : `
-                  <a href="auth.html" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-tr from-primary-600 to-primary-500 rounded-xl hover:from-primary-700 hover:to-primary-600 shadow-md transition-all pulse-glow">Sign In</a>
-                `}
+              <div class="flex items-center gap-2" id="header-user-actions">
+                <a href="auth.html" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-tr from-primary-600 to-primary-500 rounded-xl hover:from-primary-700 hover:to-primary-600 shadow-md transition-all pulse-glow">Sign In</a>
               </div>
             </div>
           </div>
         </div>
       </header>
     `;
+
+    // Asynchronously resolve auth state to load user profile button / admin button without blocking layout
+    clovasAuth.getCurrentUser().then(user => {
+      const userActionsContainer = document.getElementById('header-user-actions');
+      if (userActionsContainer) {
+        const isAdmin = user && user.email && user.email.includes('admin');
+        if (user) {
+          userActionsContainer.innerHTML = `
+            <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-85 transition-opacity">
+              <div class="h-9 w-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-350 border border-slate-300 dark:border-slate-700">
+                ${(user.displayName || user.email || 'U').substring(0, 1).toUpperCase()}
+              </div>
+            </a>
+            ${isAdmin ? `
+              <a href="admin/index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 font-medium text-xs border border-indigo-200 dark:border-indigo-800/50 hover:bg-indigo-100 dark:hover:bg-indigo-950/50 transition-colors">Admin</a>
+            ` : ''}
+            <button id="logout-btn" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors hidden sm:block">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            </button>
+          `;
+          
+          // Wire logout button
+          const logoutBtn = document.getElementById('logout-btn');
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+              await clovasAuth.logout();
+              showToast('Logged out successfully.');
+              setTimeout(() => window.location.href = 'index.html', 1000);
+            });
+          }
+        }
+      }
+      
+      // Silent database sync if user is present
+      if (user) {
+        clovasApi.syncUser().catch(e => console.warn('Silent MDB user sync failed:', e.message));
+      }
+    });
 
     // Wire up events
     document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
@@ -330,15 +351,6 @@ const injectHeaderAndFooter = async () => {
     if (headerSearchBtn) {
       headerSearchBtn.addEventListener('click', runGlobalSearch);
     }
-
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        await clovasAuth.logout();
-        showToast('Logged out successfully.');
-        setTimeout(() => window.location.href = 'index.html', 1000);
-      });
-    }
   }
 
   if (footerPlaceholder) {
@@ -381,7 +393,7 @@ const injectHeaderAndFooter = async () => {
             <!-- Brand -->
             <div class="flex flex-col gap-4">
               <div class="flex items-center gap-2">
-                <img src="assets/logo.png" alt="C" class="h-6 w-auto object-contain rounded-md">
+                <img src="assets/logo-removebg.png" alt="C" class="h-6 w-auto object-contain rounded-md">
                 <span class="font-serif text-xl font-bold tracking-wide text-slate-855 dark:text-white">Clovas Shopping</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-light">Premium Fashion • Trusted Shopping • Fast Delivery. Delivering premium clothing, shoes, and luxury accessories directly to your door.</p>
@@ -442,16 +454,6 @@ const injectHeaderAndFooter = async () => {
   // Update badges
   updateCartBadge();
   updateWishlistBadge();
-
-  // If there's a login syncing check, do it once
-  if (user) {
-    try {
-      // Sync auth status with database silently
-      await clovasApi.syncUser();
-    } catch (e) {
-      console.warn('Silent MDB user sync failed:', e.message);
-    }
-  }
 };
 
 // --- Scroll Reveal Animations ---
