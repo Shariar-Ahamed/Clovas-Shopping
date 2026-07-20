@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMode = 'login'; // login, register, forgot
   let isOtpMode = false;
   let countdownInterval = null;
+  let showSuccessToastFirst = false;
 
   const mapFirebaseError = (error) => {
     if (!error) return 'An error occurred during authentication.';
@@ -255,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
+    showSuccessToastFirst = true;
     const email = loginEmail.value;
     const submitBtn = loginForm.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
@@ -267,6 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!otp || otp.length < 6) {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
+        showSuccessToastFirst = false;
         return showError('Please enter a valid 6-digit OTP code.');
       }
 
@@ -299,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
+        showSuccessToastFirst = false;
         showError(error.message);
       }
     } else {
@@ -317,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
+        showSuccessToastFirst = false;
         showError(error.message);
       }
     }
@@ -549,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Google Sign-in
   googleLoginBtn.addEventListener('click', async () => {
     hideError();
+    showSuccessToastFirst = true;
     try {
       showToast('Connecting Google...', 'success');
       const user = await clovasAuth.loginWithGoogle();
@@ -557,6 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => window.location.href = 'index.html', 1000);
       }
     } catch (error) {
+      showSuccessToastFirst = false;
       showError(error.message);
     }
   });
@@ -564,11 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Automatically redirect user if already signed in or when returning from Google redirect
   clovasAuth.onAuthStateChanged(user => {
     if (user) {
-      if (user.email && user.email.includes('admin')) {
-        window.location.href = 'admin/index.html';
-      } else {
-        window.location.href = 'index.html';
-      }
+      const delay = showSuccessToastFirst ? 1000 : 0;
+      setTimeout(() => {
+        if (user.email && user.email.includes('admin')) {
+          window.location.href = 'admin/index.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      }, delay);
     }
   });
 });
