@@ -6,6 +6,12 @@ Clovas Shopping is a modern, premium, and fully responsive e-commerce web platfo
 
 ---
 
+<p align="center">
+  <a href="https://wakatime.com/badge/user/c7433bc5-6f12-4c97-baea-430790fa608c/project/99e4cc04-d4f8-48d5-8a8c-378a0975f48e">
+    <img src="https://wakatime.com/badge/user/c7433bc5-6f12-4c97-baea-430790fa608c/project/99e4cc04-d4f8-48d5-8a8c-378a0975f48e.svg" alt="wakatime">
+  </a>
+</p>
+
 ## 🚀 Key Features
 
 * **Elegant Home Page**: Features premium hero banners, countdown timers for flash sales, curated category cards, and trending selections.
