@@ -729,7 +729,7 @@ const clovasApi = {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(settings)
+    body: settings
   }, () => {
     const current = JSON.parse(localStorage.getItem('mock_config') || JSON.stringify({
       flashSaleEnabled: true,

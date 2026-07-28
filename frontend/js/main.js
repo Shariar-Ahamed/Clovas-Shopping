@@ -253,8 +253,14 @@ const injectHeaderAndFooter = async () => {
       <header class="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/40 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16 gap-4">
-            <!-- Left: Logo -->
-            <div class="flex-shrink-0 flex items-center">
+            <!-- Left: Logo & Mobile Hamburger -->
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <!-- Mobile Hamburger Menu Button -->
+              <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              </button>
               <a href="index.html" class="flex items-center group">
                 <img src="assets/logo-removebg.png" alt="Clovas Shopping" class="h-8 w-auto object-contain rounded-md group-hover:scale-105 transition-transform">
               </a>
@@ -270,7 +276,7 @@ const injectHeaderAndFooter = async () => {
             </nav>
  
             <!-- Right: Search Bar & Actions -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 sm:gap-3">
               <!-- Compact Search input box -->
               <div class="hidden lg:flex items-center relative w-44 xl:w-52 mr-1">
                 <input type="text" id="header-search-input" placeholder="Search outfits..." class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-950 transition-all font-sans">
@@ -280,7 +286,7 @@ const injectHeaderAndFooter = async () => {
               </div>
 
                <!-- Dark Mode Switcher (Locked) -->
-               <button id="dark-mode-btn" class="p-2 rounded-xl text-slate-400 cursor-not-allowed hover:bg-transparent transition-colors" disabled title="Theme switching is currently locked to Light Mode.">
+               <button id="dark-mode-btn" class="hidden sm:block p-2 rounded-xl text-slate-400 cursor-not-allowed hover:bg-transparent transition-colors" disabled title="Theme switching is currently locked to Light Mode.">
                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                </button>
  
@@ -328,13 +334,24 @@ const injectHeaderAndFooter = async () => {
               </div>
  
               <!-- Divider -->
-              <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+              <div class="hidden sm:block h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
  
               <!-- Auth/Profile Button -->
               <div class="flex items-center gap-2" id="header-user-actions">
-                <a href="auth.html" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white dark:text-slate-950 bg-slate-900 dark:bg-white rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover:shadow-lg active:scale-95">Sign In</a>
+                <a href="auth.html" class="inline-flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-2.5 text-[11px] sm:text-xs font-bold text-white dark:text-slate-950 bg-slate-900 dark:bg-white rounded-lg sm:rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover:shadow-lg active:scale-95 whitespace-nowrap">Sign In</a>
               </div>
             </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Menu Dropdown (Hidden by default) -->
+        <div id="mobile-menu-dropdown" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/40 shadow-xl z-30 transition-all duration-300 font-sans">
+          <div class="px-4 py-3 space-y-2">
+            <a href="index.html" class="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary-600 dark:hover:text-white transition-all">Home</a>
+            <a href="shop.html?gender=Men" class="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary-600 dark:hover:text-white transition-all">Men</a>
+            <a href="shop.html?gender=Women" class="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary-600 dark:hover:text-white transition-all">Women</a>
+            <a href="shop.html?gender=Accessories" class="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary-600 dark:hover:text-white transition-all">Accessories</a>
+            <a href="shop.html" class="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary-600 dark:hover:text-white transition-all">Shop All</a>
           </div>
         </div>
       </header>
@@ -371,7 +388,7 @@ const injectHeaderAndFooter = async () => {
           }
         } else {
           userActionsContainer.innerHTML = `
-            <a href="auth.html" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white dark:text-slate-950 bg-slate-900 dark:bg-white rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover:shadow-lg active:scale-95">Sign In</a>
+            <a href="auth.html" class="inline-flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-2.5 text-[11px] sm:text-xs font-bold text-white dark:text-slate-950 bg-slate-900 dark:bg-white rounded-lg sm:rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all duration-300 hover:shadow-lg active:scale-95 whitespace-nowrap">Sign In</a>
           `;
         }
       }
@@ -406,6 +423,21 @@ const injectHeaderAndFooter = async () => {
 
     // Wire up events
     document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
+    
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+    if (mobileMenuBtn && mobileMenuDropdown) {
+      mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenuDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        if (mobileMenuDropdown && !mobileMenuDropdown.contains(e.target) && e.target !== mobileMenuBtn) {
+          mobileMenuDropdown.classList.add('hidden');
+        }
+      });
+    }
     
     // Notification Toggle & Dynamic Loading
     const bellBtn = document.getElementById('notification-bell-btn');
