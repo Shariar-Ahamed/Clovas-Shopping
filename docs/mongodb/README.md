@@ -2,6 +2,11 @@
 
 This document provides developer guidelines on how **MongoDB Atlas** (Cloud Database) and **Mongoose ODM** are integrated into the Clovas Shopping project.
 
+## 🔗 Useful Links
+- **MongoDB Atlas Cloud Console:** [https://cloud.mongodb.com](https://cloud.mongodb.com)
+- **MongoDB Official Site:** [https://www.mongodb.com](https://www.mongodb.com)
+- **Mongoose ODM Documentation:** [https://mongoosejs.com/docs](https://mongoosejs.com/docs)
+
 ---
 
 ## ☁️ Overview of MongoDB in Clovas Shopping

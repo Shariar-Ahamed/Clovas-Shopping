@@ -2,6 +2,11 @@
 
 This document provides developer guidelines on how **Firebase Authentication** is integrated into the Clovas Shopping project, covering both client-side login flows and server-side token validation.
 
+## 🔗 Useful Links
+- **Firebase Console:** [https://console.firebase.google.com](https://console.firebase.google.com)
+- **Firebase Auth Documentation:** [https://firebase.google.com/docs/auth](https://firebase.google.com/docs/auth)
+- **Google Cloud Console:** [https://console.cloud.google.com](https://console.cloud.google.com)
+
 ---
 
 ## 🔒 Overview of Authentication in Clovas Shopping

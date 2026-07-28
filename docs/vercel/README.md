@@ -2,6 +2,12 @@
 
 This document provides developer guidelines on how **Vercel** is used in the Clovas Shopping project, explaining its configuration, serverless routing rules, and deployment mechanics.
 
+## 🔗 Useful Links
+- **Vercel Official Website:** [https://vercel.com](https://vercel.com)
+- **Vercel Console/Dashboard:** [https://vercel.com/dashboard](https://vercel.com/dashboard)
+- **Live Project URL:** [https://clovas-shopping.vercel.app](https://clovas-shopping.vercel.app)
+- **Vercel Configuration Documentation:** [https://vercel.com/docs/projects/project-configuration](https://vercel.com/docs/projects/project-configuration)
+
 ---
 
 ## 🚀 Overview of Vercel in Clovas Shopping
