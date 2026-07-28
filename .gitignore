@@ -6,3 +6,5 @@ backend/.env
 .idea/
 .vscode/
 *.log
+scratch/
+
