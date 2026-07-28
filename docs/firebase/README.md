@@ -21,7 +21,7 @@ Clovas Shopping utilizes a hybrid authentication approach:
 
 ## 💻 Client-Side Authentication Flow
 
-The client-side Firebase configuration resides in [frontend/js/firebase-config.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/frontend/js/firebase-config.js) and the login controllers are in [frontend/js/auth.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/frontend/js/auth.js).
+The client-side Firebase configuration resides in [frontend/js/firebase-config.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/frontend/js/firebase-config.js) and the login controllers are in [frontend/js/auth.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/frontend/js/auth.js).
 
 1. **Initialization:**
    Firebase Client SDK is initialized using credentials defined in the `/backend/.env` file (`FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, etc.).
@@ -40,7 +40,7 @@ The client-side Firebase configuration resides in [frontend/js/firebase-config.j
 
 ## 🛡️ Server-Side Authorization Middleware (`protect`)
 
-The middleware configured in [backend/middleware/auth.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/middleware/auth.js) intercepts incoming requests and performs verification:
+The middleware configured in [backend/middleware/auth.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/middleware/auth.js) intercepts incoming requests and performs verification:
 
 ### 1. Offline/Development Mockups
 To ensure the backend runs smoothly during offline local development without making Firebase network queries, the middleware checks for mock developer tokens:

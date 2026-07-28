@@ -20,7 +20,7 @@ SSLCommerz is the largest payment gateway aggregator in Bangladesh. The Clovas S
 
 ## 🛠️ Backend Routing & Controller Mappings
 
-The backend endpoints are implemented in the file [backend/routes/payments.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/routes/payments.js).
+The backend endpoints are implemented in the file [backend/routes/payments.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/routes/payments.js).
 
 ### 1. SSLCommerz Credentials Initializer
 ```javascript

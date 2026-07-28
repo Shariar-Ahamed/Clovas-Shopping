@@ -21,7 +21,7 @@ Vercel acts as the primary deployment host for both the **Frontend** static web 
 
 ## 🛠️ Configuration File: `vercel.json`
 
-The file [vercel.json](file:///e:/Git%20All%20Repo/Clovas-Shopping/vercel.json) in the project root dictates build parameters, serverless mappings, and URL redirection rules. Below is a detailed breakdown of its architecture:
+The file [vercel.json](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/vercel.json) in the project root dictates build parameters, serverless mappings, and URL redirection rules. Below is a detailed breakdown of its architecture:
 
 ```json
 {

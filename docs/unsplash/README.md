@@ -21,7 +21,7 @@ Instead of committing large image binary files (like `.jpg` or `.png`) directly 
 
 ## ⚙️ Usage Mechanics & CDN Optimization
 
-The mock product listings in [backend/seed.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/seed.js) reference direct Unsplash CDN URLs:
+The mock product listings in [backend/seed.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/seed.js) reference direct Unsplash CDN URLs:
 
 ```json
 {

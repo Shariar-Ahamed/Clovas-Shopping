@@ -23,7 +23,7 @@ In Clovas Shopping, EmailJS is used in the **OTP (One-Time Password) Login flow*
 
 ## 📡 API Integration & Backend Controller
 
-The logic is implemented inside the OTP sender endpoint `/api/auth/send-otp` in [backend/routes/auth.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/routes/auth.js).
+The logic is implemented inside the OTP sender endpoint `/api/auth/send-otp` in [backend/routes/auth.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/routes/auth.js).
 
 ### 1. Verification of Configuration
 Before sending an email, the backend checks for required environment variables:

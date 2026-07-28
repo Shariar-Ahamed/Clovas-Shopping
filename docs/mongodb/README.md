@@ -15,7 +15,7 @@ MongoDB is a document-based NoSQL database used to store all dynamic application
 
 - **Object Modeling (ODM):** We use **Mongoose** to declare strongly-typed database schemas and enforce data validation directly in Express routes.
 - **Connection Configuration:** Set via the `MONGODB_URI` environment variable inside the `/backend/.env` file.
-- **Database Connection File:** Managed in [backend/config/db.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/config/db.js).
+- **Database Connection File:** Managed in [backend/config/db.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/config/db.js).
 
 ---
 
@@ -41,9 +41,9 @@ const connectDB = async () => {
 
 ## 🗄️ Database Schema Directory & Models
 
-The schemas are declared inside the [backend/models/](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/) folder. Below is the relational structure of all schemas:
+The schemas are declared inside the [backend/models/](https://github.com/Shariar-Ahamed/Clovas-Shopping/tree/main/backend/models) folder. Below is the relational structure of all schemas:
 
-### 1. `User` Schema ([User.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/User.js))
+### 1. `User` Schema ([User.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/models/User.js))
 Stores user profile information, synced shipping destinations, and real-time carts/wishlists.
 - **`firebaseUid`:** String (Required, Unique) - Links the database profile directly to Firebase Auth.
 - **`role`:** String - Enum `['user', 'admin']` (Default: `user`).
@@ -51,14 +51,14 @@ Stores user profile information, synced shipping destinations, and real-time car
 - **`cart`:** Embedded Array of Product sub-documents (product id, title, image, price, quantity, stock). Syncs live on cart edits.
 - **`wishlist`:** Embedded Array of Product sub-documents (product id, title, image, price). Syncs live on liked outfit toggle.
 
-### 2. `Product` Schema ([Product.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/Product.js))
+### 2. `Product` Schema ([Product.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/models/Product.js))
 Defines the shop catalog listings.
 - **`sku`:** String (Required, Unique, Uppercase, Trimmed) - Unique Product Code (e.g. `CLV-MEN-18294`) used for search indexing and vendor codes.
 - **`price` & `discountPrice`:** Numbers - Controls normal pricing and active promotional discounts.
 - **`stock`:** Number (Default: 0) - Inventory tracking.
 - **`isFeatured` / `isTrending` / `isBestSeller` / `isNewArrival`:** Booleans - Homepage dashboard highlight flags.
 
-### 3. `Order` Schema ([Order.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/Order.js))
+### 3. `Order` Schema ([Order.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/models/Order.js))
 Manages transaction details and shipping state.
 - **`user`:** Mongoose ObjectId - References the `User` document.
 - **`transactionId`:** String (Required, Unique) - SSLCommerz transaction reference.
@@ -67,13 +67,13 @@ Manages transaction details and shipping state.
 - **`paymentStatus`:** String - Enum `['Pending', 'Paid', 'Failed', 'Cancelled']`.
 - **`orderStatus`:** String - Enum `['Pending', 'Processing', 'Shipped', 'Delivered']`.
 
-### 4. `Coupon` Schema ([Coupon.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/Coupon.js))
+### 4. `Coupon` Schema ([Coupon.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/models/Coupon.js))
 Manages active promo discounts.
 - **`code`:** String (Required, Unique, Uppercase) - Coupon code input by users at checkout.
 - **`discountType`:** String - Enum `['percentage', 'fixed']`.
 - **`expiryDate`:** Date (Default: 7 days from creation) - Expiry constraint.
 
-### 5. `Config` Schema ([Config.js](file:///e:/Git%20All%20Repo/Clovas-Shopping/backend/models/Config.js))
+### 5. `Config` Schema ([Config.js](https://github.com/Shariar-Ahamed/Clovas-Shopping/blob/main/backend/models/Config.js))
 Global site config document (usually only 1 configuration document exists in the collection).
 - **`flashSaleEnabled`:** Boolean.
 - **`flashSaleEndDate`:** Date.
