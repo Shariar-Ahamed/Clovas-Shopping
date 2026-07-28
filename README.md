@@ -6,6 +6,21 @@ Clovas Shopping is a modern, premium, and fully responsive e-commerce web platfo
 
 ---
 
+## 📖 Developer Documentation
+
+The official developer documentation, architecture guides, and integration tutorials are hosted live on GitBook:
+👉 **[Clovas Shopping Developer Portal](https://clovas-shopping.gitbook.io/clovas-shopping-docs-1/)**
+
+This portal provides in-depth guidelines on:
+* **Vercel Deployment**: Serverless routing configurations.
+* **MongoDB & Mongoose**: Database model schemas and structures.
+* **Firebase Authentication**: Client flows and custom server-side protection middlewares.
+* **SSLCommerz**: Sandbox payment initiation, success/fail/cancel callbacks, and transactions tracking.
+* **EmailJS Integration**: SMTP mailers configuration and dynamic verification OTP codes.
+* **Unsplash CDN**: High-fidelity static product placeholders.
+
+---
+
 <p align="center">
   <a href="https://wakatime.com/badge/user/c7433bc5-6f12-4c97-baea-430790fa608c/project/99e4cc04-d4f8-48d5-8a8c-378a0975f48e">
     <img src="https://wakatime.com/badge/user/c7433bc5-6f12-4c97-baea-430790fa608c/project/99e4cc04-d4f8-48d5-8a8c-378a0975f48e.svg" alt="wakatime">
