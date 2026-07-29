@@ -2,6 +2,10 @@ import clovasApi from './api.js';
 import clovasAuth from './firebase-config.js';
 import { showToast, showConfirm } from './main.js';
 
+// Global instances to track dashboard charts
+let salesTrendChartInstance = null;
+let categoryShareChartInstance = null;
+
 // --- Shared Admin Access Verifier ---
 const verifyAdminAccess = async () => {
   const user = await clovasAuth.getCurrentUser();
@@ -85,6 +89,108 @@ export const initAdminDashboard = async () => {
           `;
           categoryBreakdownList.appendChild(div);
         });
+      }
+
+      // --- Chart.js Renditions ---
+      if (typeof Chart !== 'undefined') {
+        // 1. Sales Trend Line Chart
+        const trendCanvas = document.getElementById('salesTrendChart');
+        if (trendCanvas) {
+          const ctxTrend = trendCanvas.getContext('2d');
+          if (salesTrendChartInstance) {
+            salesTrendChartInstance.destroy();
+          }
+          
+          const trendLabels = (data.dailySales || []).map(item => {
+            const d = new Date(item.date);
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+          });
+          const trendData = (data.dailySales || []).map(item => item.sales);
+
+          const gradient = ctxTrend.createLinearGradient(0, 0, 0, 300);
+          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.35)');
+          gradient.addColorStop(1, 'rgba(59, 130, 246, 0.00)');
+
+          salesTrendChartInstance = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+              labels: trendLabels,
+              datasets: [{
+                label: 'Sales (BDT)',
+                data: trendData,
+                borderColor: '#2563eb',
+                borderWidth: 3,
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#2563eb',
+                pointHoverRadius: 6,
+                pointRadius: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                y: {
+                  grid: { color: 'rgba(226, 232, 240, 0.1)' },
+                  ticks: { font: { family: 'Poppins', size: 10 } }
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { family: 'Poppins', size: 10 } }
+                }
+              }
+            }
+          });
+        }
+
+        // 2. Category Share Doughnut Chart
+        const shareCanvas = document.getElementById('categoryShareChart');
+        if (shareCanvas) {
+          const ctxShare = shareCanvas.getContext('2d');
+          if (categoryShareChartInstance) {
+            categoryShareChartInstance.destroy();
+          }
+
+          const categoryLabels = Object.keys(data.salesByCategory || {});
+          const categoryData = Object.values(data.salesByCategory || {});
+
+          categoryShareChartInstance = new Chart(ctxShare, {
+            type: 'doughnut',
+            data: {
+              labels: categoryLabels,
+              datasets: [{
+                data: categoryData,
+                backgroundColor: [
+                  '#3b82f6', // Primary Blue
+                  '#10b981', // Emerald Green
+                  '#8b5cf6', // Violet
+                  '#f59e0b'  // Amber
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    boxWidth: 12,
+                    font: { family: 'Poppins', size: 10 }
+                  }
+                }
+              },
+              cutout: '65%'
+            }
+          });
+        }
       }
     })
     .catch(err => {

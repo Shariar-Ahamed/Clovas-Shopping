@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="../css/style.css">
   <!-- Tailwind CSS Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -125,6 +127,25 @@
         </div>
         <span class="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></span>
       </a>
+    </section>
+
+    <!-- Analytics Charts Grid -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+      <!-- Sales Trend Line Chart -->
+      <div class="lg:col-span-2 glass p-6 rounded-3xl border border-slate-100 dark:border-slate-800/40 shadow-[0_4px_30px_rgba(0,0,0,0.02)] bg-white dark:bg-slate-900/50">
+        <h3 class="font-serif text-lg font-bold border-b border-slate-150 dark:border-slate-800 pb-3 mb-5">Sales Revenue Trend (Last 7 Days)</h3>
+        <div class="h-80 w-full relative">
+          <canvas id="salesTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Category Share Doughnut Chart -->
+      <div class="glass p-6 rounded-3xl border border-slate-100 dark:border-slate-800/40 shadow-[0_4px_30px_rgba(0,0,0,0.02)] bg-white dark:bg-slate-900/50">
+        <h3 class="font-serif text-lg font-bold border-b border-slate-150 dark:border-slate-800 pb-3 mb-5">Sales by Category</h3>
+        <div class="h-80 w-full relative flex items-center justify-center">
+          <canvas id="categoryShareChart" class="max-h-72"></canvas>
+        </div>
+      </div>
     </section>
 
     <!-- Detailed Section (Recent Orders & Breakdown) -->

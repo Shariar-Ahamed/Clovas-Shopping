@@ -619,10 +619,28 @@ const clovasApi = {
   getAdminAnalytics: () => requestWithMock('/admin/analytics', {}, () => {
     const mockOrders = JSON.parse(localStorage.getItem('mock_orders') || '[]');
     const totalSales = mockOrders.reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.totalAmount : 0), 0);
+    
+    // Generate mock daily sales (Last 7 Days)
+    const mockDailySales = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateString = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      mockDailySales.push({
+        date: dateString,
+        sales: mockOrders.length > 0 ? Math.floor(Math.random() * 4000) + 1000 : 0
+      });
+    }
+
     return {
-      summary: { totalSales, totalOrders: mockOrders.length, totalProducts: MOCK_PRODUCTS.length, totalUsers: 1 },
-      salesByCategory: { Men: totalSales },
-      recentOrders: mockOrders.slice(0, 5)
+      summary: { totalSales, totalOrders: mockOrders.length, totalProducts: MOCK_PRODUCTS.length, totalUsers: 3 },
+      salesByCategory: {
+        Men: Math.floor(totalSales * 0.4),
+        Women: Math.floor(totalSales * 0.45),
+        Accessories: Math.floor(totalSales * 0.15)
+      },
+      recentOrders: mockOrders.slice(0, 5),
+      dailySales: mockDailySales
     };
   }),
   getAdminUsers: () => requestWithMock('/admin/users', {}, () => []),

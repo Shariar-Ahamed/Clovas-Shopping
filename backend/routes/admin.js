@@ -54,6 +54,39 @@ router.get('/analytics', protect, adminOnly, async (req, res) => {
       }
     });
 
+    // Daily Sales (Last 7 Days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const dailySalesRaw = await Order.aggregate([
+      {
+        $match: {
+          paymentStatus: 'Paid',
+          createdAt: { $gte: sevenDaysAgo }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          sales: { $sum: "$totalAmount" }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    const dailySales = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateString = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      const match = dailySalesRaw.find(item => item._id === dateString);
+      dailySales.push({
+        date: dateString,
+        sales: match ? match.sales : 0
+      });
+    }
+
     res.json({
       summary: {
         totalSales,
@@ -63,7 +96,8 @@ router.get('/analytics', protect, adminOnly, async (req, res) => {
       },
       salesByCategory,
       recentOrders,
-      statusCounts: statusObj
+      statusCounts: statusObj,
+      dailySales
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
