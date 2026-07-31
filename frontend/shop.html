@@ -78,7 +78,9 @@
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Search Key</label>
             <div class="relative">
               <input type="text" id="filter-search" placeholder="Type name..." class="w-full pl-4 pr-10 py-3 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors">
-              <span class="absolute right-3 top-3.5 text-slate-400"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></span>
+              <button type="button" id="trigger-search-btn" class="absolute right-3 top-3.5 text-slate-400 hover:text-primary-600 transition-colors cursor-pointer focus:outline-none">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </button>
             </div>
           </div>
 
@@ -247,5 +249,6 @@
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/main.js"></script>
   <script type="module" src="js/shop.js"></script>
+  <script src="js/select-helper.js"></script>
 </body>
 </html>

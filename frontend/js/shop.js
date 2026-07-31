@@ -328,21 +328,30 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Wire controls
-  applyFiltersBtn.addEventListener('click', () => {
+  const runFilterSearch = () => {
     currentPage = 1;
     fetchAndRenderProducts();
-  });
+  };
 
-  sortSelect.addEventListener('change', () => {
-    currentPage = 1;
-    fetchAndRenderProducts();
-  });
+  applyFiltersBtn.addEventListener('click', runFilterSearch);
+
+  if (filterSearch) {
+    filterSearch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        runFilterSearch();
+      }
+    });
+  }
+
+  const triggerSearchBtn = document.getElementById('trigger-search-btn');
+  if (triggerSearchBtn) {
+    triggerSearchBtn.addEventListener('click', runFilterSearch);
+  }
+
+  sortSelect.addEventListener('change', runFilterSearch);
 
   if (filterColor) {
-    filterColor.addEventListener('change', () => {
-      currentPage = 1;
-      fetchAndRenderProducts();
-    });
+    filterColor.addEventListener('change', runFilterSearch);
   }
 
   clearFiltersBtn.addEventListener('click', (e) => {
