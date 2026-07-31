@@ -247,7 +247,7 @@ export const initAdminDashboard = async () => {
     })
     .catch(err => {
       console.error(err);
-      showToast('Error loading stats overview.', 'error');
+      showToast('Error loading stats: ' + err.message, 'error');
     });
 };
 
