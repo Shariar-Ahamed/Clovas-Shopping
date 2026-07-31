@@ -280,16 +280,17 @@ const clovasAuth = {
       }
       return `mock-user-token-${user.uid}`;
     } else {
-      const user = authInstance?.currentUser;
+      let user = authInstance?.currentUser;
       if (!user) {
         // Fallback check cached user to prevent token loss on fast page loads
         const cached = JSON.parse(localStorage.getItem('clovas_user_cached') || 'null');
         if (cached && (cached.email.includes('admin') || cached.email === 'clovas.verify@gmail.com' || cached.role === 'admin')) {
           return 'mock-admin-token';
         }
-        return null;
+        // If cache is empty, we must block and wait for Firebase auth to load
+        user = await clovasAuth.getCurrentUser();
       }
-      return await user.getIdToken();
+      return user ? await user.getIdToken() : null;
     }
   }
 };
