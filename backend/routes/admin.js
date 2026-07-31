@@ -16,18 +16,15 @@ router.get('/analytics', protect, adminOnly, async (req, res) => {
     const totalUsers = await User.countDocuments({ role: 'user' });
 
     // Calculate total sales
-    const paidOrders = await Order.find({ paymentStatus: 'Paid' });
+    const paidOrders = await Order.find({ paymentStatus: 'Paid' }).populate('items.product', 'category');
     const totalSales = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
 
     // Sales by Category
     const salesByCategory = {};
     for (const order of paidOrders) {
       for (const item of order.items) {
-        const product = await Product.findById(item.product);
-        if (product) {
-          const category = product.category || 'Other';
-          salesByCategory[category] = (salesByCategory[category] || 0) + (item.price * item.quantity);
-        }
+        const category = (item.product && item.product.category) || 'Other';
+        salesByCategory[category] = (salesByCategory[category] || 0) + (item.price * item.quantity);
       }
     }
 

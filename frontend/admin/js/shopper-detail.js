@@ -2,8 +2,30 @@ import clovasApi from '../../js/api.js';
 import clovasAuth from '../../js/firebase-config.js';
 import { showToast, showConfirm } from '../../js/main.js';
 
-// --- Shared Admin Access Verifier ---
 const verifyAdminAccess = async () => {
+  // 1. Quick check cached session for instant load
+  const cachedUser = clovasAuth.getCachedUser();
+  if (cachedUser) {
+    const isCachedAdmin = (cachedUser.email && (cachedUser.email.includes('admin') || cachedUser.email === 'clovas.verify@gmail.com')) || cachedUser.role === 'admin';
+    if (isCachedAdmin) {
+      // Run background check to verify session, but don't block the UI
+      clovasAuth.getCurrentUser().then(realUser => {
+        if (!realUser) {
+          showToast('Session expired.', 'error');
+          window.location.href = '../auth.html';
+        } else {
+          const isRealAdmin = (realUser.email && (realUser.email.includes('admin') || realUser.email === 'clovas.verify@gmail.com')) || realUser.role === 'admin';
+          if (!isRealAdmin) {
+            showToast('Unauthorized access.', 'error');
+            window.location.href = '../dashboard.html';
+          }
+        }
+      });
+      return cachedUser;
+    }
+  }
+
+  // 2. Block and load if no cache is present
   const user = await clovasAuth.getCurrentUser();
   if (!user) {
     showToast('Authentication required.', 'error');

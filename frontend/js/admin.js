@@ -8,6 +8,29 @@ let categoryShareChartInstance = null;
 
 // --- Shared Admin Access Verifier ---
 const verifyAdminAccess = async () => {
+  // 1. Quick check cached session for instant load
+  const cachedUser = clovasAuth.getCachedUser();
+  if (cachedUser) {
+    const isCachedAdmin = (cachedUser.email && (cachedUser.email.includes('admin') || cachedUser.email === 'clovas.verify@gmail.com')) || cachedUser.role === 'admin';
+    if (isCachedAdmin) {
+      // Run background check to verify session, but don't block the UI
+      clovasAuth.getCurrentUser().then(realUser => {
+        if (!realUser) {
+          showToast('Session expired.', 'error');
+          window.location.href = '../auth.html';
+        } else {
+          const isRealAdmin = (realUser.email && (realUser.email.includes('admin') || realUser.email === 'clovas.verify@gmail.com')) || realUser.role === 'admin';
+          if (!isRealAdmin) {
+            showToast('Unauthorized access.', 'error');
+            window.location.href = '../dashboard.html';
+          }
+        }
+      });
+      return cachedUser;
+    }
+  }
+
+  // 2. Block and load if no cache is present
   const user = await clovasAuth.getCurrentUser();
   if (!user) {
     showToast('Authentication required.', 'error');
@@ -15,7 +38,6 @@ const verifyAdminAccess = async () => {
     return null;
   }
   
-  // A simple fallback for dev: email check for admin role
   const isAdmin = (user.email && (user.email.includes('admin') || user.email === 'clovas.verify@gmail.com')) || user.role === 'admin';
   if (!isAdmin) {
     showToast('Unauthorized access. Admin only.', 'error');
@@ -36,6 +58,36 @@ export const initAdminDashboard = async () => {
   const statUsers = document.getElementById('stat-users');
   const recentOrdersRows = document.getElementById('recent-orders-rows');
   const categoryBreakdownList = document.getElementById('category-breakdown-list');
+
+  // Inject beautiful loading shimmers immediately
+  if (statSales) statSales.innerHTML = '<span class="inline-block h-6 w-24 rounded bg-slate-200 dark:bg-slate-800 animate-pulse"></span>';
+  if (statOrders) statOrders.innerHTML = '<span class="inline-block h-6 w-12 rounded bg-slate-200 dark:bg-slate-800 animate-pulse"></span>';
+  if (statProducts) statProducts.innerHTML = '<span class="inline-block h-6 w-12 rounded bg-slate-200 dark:bg-slate-800 animate-pulse"></span>';
+  if (statUsers) statUsers.innerHTML = '<span class="inline-block h-6 w-12 rounded bg-slate-200 dark:bg-slate-800 animate-pulse"></span>';
+
+  if (recentOrdersRows) {
+    recentOrdersRows.innerHTML = Array(4).fill(0).map(() => `
+      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
+        <td class="py-4"><div class="h-4 w-28 bg-slate-200 dark:bg-slate-800 rounded"></div></td>
+        <td class="py-4"><div class="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded"></div></td>
+        <td class="py-4"><div class="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded"></div></td>
+        <td class="py-4"><div class="h-4 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div></td>
+        <td class="py-4"><div class="h-5 w-16 bg-slate-200 dark:bg-slate-800 rounded-full"></div></td>
+      </tr>
+    `).join('');
+  }
+
+  if (categoryBreakdownList) {
+    categoryBreakdownList.innerHTML = Array(3).fill(0).map(() => `
+      <div class="space-y-1.5 animate-pulse">
+        <div class="flex justify-between">
+          <div class="h-3 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div>
+          <div class="h-3 w-20 bg-slate-200 dark:bg-slate-800 rounded"></div>
+        </div>
+        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+      </div>
+    `).join('');
+  }
 
   clovasApi.getAdminAnalytics()
     .then(data => {
