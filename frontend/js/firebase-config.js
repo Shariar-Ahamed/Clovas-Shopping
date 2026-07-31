@@ -221,6 +221,17 @@ const clovasAuth = {
           if (authInstance) {
             const unsubscribe = authInstance.onAuthStateChanged(user => {
               unsubscribe();
+              if (user) {
+                const cachedUser = {
+                  uid: user.uid,
+                  email: user.email,
+                  displayName: user.displayName,
+                  role: (user.email && (user.email.includes('admin') || user.email === 'clovas.verify@gmail.com')) ? 'admin' : 'user'
+                };
+                localStorage.setItem('clovas_user_cached', JSON.stringify(cachedUser));
+              } else {
+                localStorage.removeItem('clovas_user_cached');
+              }
               resolve(user);
             });
           } else {
