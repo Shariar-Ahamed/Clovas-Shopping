@@ -31,10 +31,14 @@
     }
   </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen flex overflow-x-hidden">
 
   <!-- Left Sidebar Panel Navigator -->
-  <aside class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between p-6">
+  <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-6 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0">
+    <!-- Close button on mobile -->
+    <button id="close-sidebar-btn" class="md:hidden absolute top-5 right-5 text-slate-400 hover:text-white transition-colors focus:outline-none">
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
     <div class="flex flex-col gap-8">
       <!-- Logo -->
       <div class="flex items-center gap-2">
@@ -77,8 +81,11 @@
     </a>
   </aside>
 
+  <!-- Sidebar Backdrop on Mobile -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden transition-opacity"></div>
+
   <!-- Main Content Body -->
-  <main class="flex-grow p-10 max-h-screen overflow-y-auto">
+  <main class="flex-grow p-4 md:p-10 max-h-screen overflow-y-auto w-full">
     <!-- Header with Back Button -->
     <header class="flex justify-between items-center pb-6 border-b border-slate-200 dark:border-slate-800 mb-8">
       <div class="flex items-center gap-4">
@@ -182,5 +189,28 @@
   <script type="module" src="../js/api.js"></script>
   <script type="module" src="../js/main.js"></script>
   <script type="module" src="./js/shopper-detail.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const aside = document.querySelector('aside');
+      const toggleBtn = document.getElementById('toggle-sidebar-btn');
+      const closeBtn = document.getElementById('close-sidebar-btn');
+      const backdrop = document.getElementById('sidebar-backdrop');
+
+      if (toggleBtn && aside) {
+        toggleBtn.addEventListener('click', () => {
+          aside.classList.remove('-translate-x-full');
+          if (backdrop) backdrop.classList.remove('hidden');
+        });
+      }
+
+      const closeSidebar = () => {
+        aside.classList.add('-translate-x-full');
+        if (backdrop) backdrop.classList.add('hidden');
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+      if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    });
+  </script>
 </body>
 </html>
