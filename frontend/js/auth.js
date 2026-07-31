@@ -596,4 +596,74 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Handle Password Visibility Toggle
+  const toggleButtons = document.querySelectorAll('.toggle-password');
+  toggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.previousElementSibling;
+      const eyeOpen = btn.querySelector('.eye-open');
+      const eyeClosed = btn.querySelector('.eye-closed');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
+      } else {
+        input.type = 'password';
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
+      }
+    });
+  });
+
+  // Password Strength Meter
+  const regPassword = document.getElementById('register-password');
+  const strengthContainer = document.getElementById('password-strength-container');
+  const bar1 = document.getElementById('strength-bar-1');
+  const bar2 = document.getElementById('strength-bar-2');
+  const bar3 = document.getElementById('strength-bar-3');
+  const strengthText = document.getElementById('strength-text');
+
+  if (regPassword) {
+    regPassword.addEventListener('input', () => {
+      const val = regPassword.value;
+      if (!val) {
+        strengthContainer.classList.add('hidden');
+        return;
+      }
+      
+      strengthContainer.classList.remove('hidden');
+      
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      if (score <= 2) {
+        // Weak
+        bar1.className = 'h-full w-1/3 bg-rose-500 transition-all duration-300';
+        bar2.className = 'h-full w-1/3 bg-slate-100 dark:bg-slate-800 transition-all duration-300';
+        bar3.className = 'h-full w-1/3 bg-slate-100 dark:bg-slate-800 transition-all duration-300';
+        strengthText.textContent = 'Weak Password';
+        strengthText.className = 'text-[10px] font-bold uppercase tracking-wider block mt-1 text-rose-500';
+      } else if (score <= 4) {
+        // Medium
+        bar1.className = 'h-full w-1/3 bg-amber-500 transition-all duration-300';
+        bar2.className = 'h-full w-1/3 bg-amber-500 transition-all duration-300';
+        bar3.className = 'h-full w-1/3 bg-slate-100 dark:bg-slate-800 transition-all duration-300';
+        strengthText.textContent = 'Medium Password';
+        strengthText.className = 'text-[10px] font-bold uppercase tracking-wider block mt-1 text-amber-500';
+      } else {
+        // Strong
+        bar1.className = 'h-full w-1/3 bg-emerald-500 transition-all duration-300';
+        bar2.className = 'h-full w-1/3 bg-emerald-500 transition-all duration-300';
+        bar3.className = 'h-full w-1/3 bg-emerald-500 transition-all duration-300';
+        strengthText.textContent = 'Strong Password';
+        strengthText.className = 'text-[10px] font-bold uppercase tracking-wider block mt-1 text-emerald-500';
+      }
+    });
+  }
 });
