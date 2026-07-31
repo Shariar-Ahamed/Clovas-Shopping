@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleText = document.getElementById('toggle-text');
   const googleLoginBtn = document.getElementById('google-login-btn');
   const socialDivider = document.getElementById('social-divider');
+  const loadingOverlay = document.getElementById('loading-overlay');
 
   const gotoForgot = document.getElementById('goto-forgot');
   const backToLogin = document.getElementById('back-to-login');
@@ -555,6 +556,10 @@ document.addEventListener('DOMContentLoaded', () => {
   googleLoginBtn.addEventListener('click', async () => {
     hideError();
     showSuccessToastFirst = true;
+    if (loadingOverlay) {
+      loadingOverlay.classList.remove('hidden');
+      loadingOverlay.classList.remove('opacity-0');
+    }
     try {
       showToast('Connecting Google...', 'success');
       const user = await clovasAuth.loginWithGoogle();
@@ -564,6 +569,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       showSuccessToastFirst = false;
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('opacity-0');
+        setTimeout(() => loadingOverlay.classList.add('hidden'), 300);
+      }
       showError(error.message);
     }
   });
@@ -579,6 +588,12 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.href = 'index.html';
         }
       }, delay);
+    } else {
+      // Hide the loading overlay smoothly to show the login form
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('opacity-0');
+        setTimeout(() => loadingOverlay.classList.add('hidden'), 300);
+      }
     }
   });
 });

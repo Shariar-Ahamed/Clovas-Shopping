@@ -49,6 +49,19 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col justify-between transition-colors duration-300">
 
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 transition-opacity duration-300">
+    <div class="flex flex-col items-center gap-4">
+      <div class="relative flex items-center justify-center">
+        <!-- Spinner -->
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
+        <!-- Inner glow pulse -->
+        <div class="absolute h-8 w-8 rounded-full bg-primary-500/10 animate-ping"></div>
+      </div>
+      <p class="text-sm font-semibold tracking-wide text-slate-500 dark:text-slate-400 animate-pulse">Connecting to Clovas...</p>
+    </div>
+  </div>
+
   <!-- Main Container -->
   <main class="flex-grow flex items-center justify-center py-6 px-4 md:py-10 relative z-10">
     <!-- Split Pane Card Wrapper -->
