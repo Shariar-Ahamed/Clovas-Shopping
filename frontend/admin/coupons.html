@@ -180,5 +180,28 @@
     import { initCouponsPanel } from '../js/admin.js';
     document.addEventListener('DOMContentLoaded', initCouponsPanel);
   </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const aside = document.querySelector('aside');
+      const toggleBtn = document.getElementById('toggle-sidebar-btn');
+      const closeBtn = document.getElementById('close-sidebar-btn');
+      const backdrop = document.getElementById('sidebar-backdrop');
+
+      if (toggleBtn && aside) {
+        toggleBtn.addEventListener('click', () => {
+          aside.classList.remove('-translate-x-full');
+          if (backdrop) backdrop.classList.remove('hidden');
+        });
+      }
+
+      const closeSidebar = () => {
+        aside.classList.add('-translate-x-full');
+        if (backdrop) backdrop.classList.add('hidden');
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+      if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    });
+  </script>
 </body>
 </html>
