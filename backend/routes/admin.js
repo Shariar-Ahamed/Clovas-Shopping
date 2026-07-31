@@ -11,12 +11,26 @@ const { adminOnly } = require('../middleware/admin');
 // @access  Private (Admin Only)
 router.get('/analytics', protect, adminOnly, async (req, res) => {
   try {
-    const totalOrders = await Order.countDocuments({});
-    const totalProducts = await Product.countDocuments({});
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    // Run all database queries in parallel to minimize cross-continental network round-trip delays
+    const [
+      totalOrders,
+      totalProducts,
+      totalUsers,
+      paidOrders,
+      recentOrders,
+      statusCounts
+    ] = await Promise.all([
+      Order.countDocuments({}),
+      Product.countDocuments({}),
+      User.countDocuments({ role: 'user' }),
+      Order.find({ paymentStatus: 'Paid' }).populate('items.product', 'category'),
+      Order.find({}).populate('user', 'name email').sort({ createdAt: -1 }).limit(5),
+      Order.aggregate([
+        { $group: { _id: '$orderStatus', count: { $sum: 1 } } }
+      ])
+    ]);
 
     // Calculate total sales
-    const paidOrders = await Order.find({ paymentStatus: 'Paid' }).populate('items.product', 'category');
     const totalSales = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
 
     // Sales by Category
@@ -27,17 +41,6 @@ router.get('/analytics', protect, adminOnly, async (req, res) => {
         salesByCategory[category] = (salesByCategory[category] || 0) + (item.price * item.quantity);
       }
     }
-
-    // Recent orders
-    const recentOrders = await Order.find({})
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 })
-      .limit(5);
-
-    // Order status count
-    const statusCounts = await Order.aggregate([
-      { $group: { _id: '$orderStatus', count: { $sum: 1 } } }
-    ]);
 
     const statusObj = {
       Processing: 0,
