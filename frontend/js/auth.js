@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingOverlay.classList.remove('opacity-0');
     }
     try {
-      showToast('Connecting Google...', 'success');
+      showToast('Signing in with Google...', 'success');
       const user = await clovasAuth.loginWithGoogle();
       if (user) {
         showToast('Logged in via Google!');
