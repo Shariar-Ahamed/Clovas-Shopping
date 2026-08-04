@@ -849,6 +849,30 @@ const clovasApi = {
     const mockUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
     return mockUsers.find(u => u._id === id) || mockUsers[0];
   }),
+
+  // Categories API
+  getCategories: () => requestWithMock('/categories', {}, () => {
+    return JSON.parse(localStorage.getItem('mock_categories') || '[]');
+  }),
+  adminAddCategory: (data) => requestWithMock('/categories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }, () => {
+    const mockCategories = JSON.parse(localStorage.getItem('mock_categories') || '[]');
+    const newCat = { _id: 'cat_' + Date.now(), ...data, createdAt: new Date().toISOString() };
+    mockCategories.push(newCat);
+    localStorage.setItem('mock_categories', JSON.stringify(mockCategories));
+    return newCat;
+  }),
+  adminDeleteCategory: (id) => requestWithMock(`/categories/${id}`, {
+    method: 'DELETE'
+  }, () => {
+    const mockCategories = JSON.parse(localStorage.getItem('mock_categories') || '[]');
+    const filtered = mockCategories.filter(c => c._id !== id);
+    localStorage.setItem('mock_categories', JSON.stringify(filtered));
+    return { message: 'Category removed' };
+  }),
 };
 
 window.clovasApi = clovasApi;
