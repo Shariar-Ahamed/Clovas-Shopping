@@ -25,7 +25,15 @@ router.post('/initiate/:orderId', protect, async (req, res) => {
     }
 
     const backendUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
-    const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:5500/frontend';
+    let frontendUrl = process.env.FRONTEND_URL;
+    if (!frontendUrl) {
+      const host = req.get('host');
+      if (host.includes('vercel.app') || process.env.VERCEL) {
+        frontendUrl = `${req.protocol}://${host}`;
+      } else {
+        frontendUrl = 'http://127.0.0.1:5500/frontend';
+      }
+    }
 
     const paymentData = {
       total_amount: order.totalAmount,
