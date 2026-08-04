@@ -525,106 +525,213 @@ export const initOrdersPanel = async () => {
   const user = await verifyAdminAccess();
   if (!user) return;
 
-  const rowsContainer = document.getElementById('admin-orders-rows');
+  const contentContainer = document.getElementById('orders-content-container');
+  if (!contentContainer) return;
+
+  let allOrders = [];
 
   const loadAdminOrders = () => {
-    const orderSkeleton = `
-      <tr class="border-b border-slate-100 dark:border-slate-850 animate-pulse">
-        <td class="p-4 pl-6">
-          <div class="h-4 w-28 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
-          <div class="h-4 w-32 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
-          <div class="h-4 w-24 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
-          <div class="h-4 w-16 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
-          <div class="h-4 w-20 rounded shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4">
-          <div class="h-6 w-16 rounded-full shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-        <td class="p-4 pr-6 text-right">
-          <div class="inline-block h-8 w-24 rounded-lg shimmer bg-slate-200 dark:bg-slate-800"></div>
-        </td>
-      </tr>
+    contentContainer.innerHTML = `
+      <div class="p-8 text-center text-slate-500 animate-pulse">
+        <div class="h-6 w-48 bg-slate-200 dark:bg-slate-800 rounded mx-auto mb-4"></div>
+        <div class="h-4 w-64 bg-slate-150 dark:bg-slate-800/80 rounded mx-auto"></div>
+      </div>
     `;
-    rowsContainer.innerHTML = orderSkeleton.repeat(4);
 
     clovasApi.adminGetOrders()
       .then(orders => {
-        rowsContainer.innerHTML = '';
         if (orders.length === 0) {
-          rowsContainer.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500">No orders recorded yet.</td></tr>';
+          contentContainer.innerHTML = '<div class="p-8 text-center text-slate-500">No orders recorded yet.</div>';
           return;
         }
 
-        orders.forEach(order => {
-          const dateStr = new Date(order.createdAt).toLocaleDateString();
-          
-          const tr = document.createElement('tr');
-          tr.className = 'border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors';
-          tr.innerHTML = `
-            <td class="p-4 pl-6">
-              <p class="font-bold text-slate-800 dark:text-white">${order.shippingAddress.name}</p>
-              <p class="text-[10px] text-slate-400 mt-0.5">${order.transactionId}</p>
-            </td>
-            <td class="p-4 text-slate-500">${dateStr}</td>
-            <td class="p-4 text-slate-500 max-w-xs truncate">${order.items.map(i => `${i.title} x${i.quantity}`).join(', ')}</td>
-            <td class="p-4 font-bold text-slate-800 dark:text-white">${order.totalAmount} BDT</td>
-            <td class="p-4">
-              <!-- Payment Status Select -->
-              <select class="pay-select px-2.5 py-1 text-[10px] rounded border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-950 font-bold focus:outline-none">
-                <option value="Pending" ${order.paymentStatus === 'Pending' ? 'selected' : ''}>Pending</option>
-                <option value="Paid" ${order.paymentStatus === 'Paid' ? 'selected' : ''}>Paid</option>
-                <option value="Failed" ${order.paymentStatus === 'Failed' ? 'selected' : ''}>Failed</option>
-                <option value="Cancelled" ${order.paymentStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-              </select>
-            </td>
-            <td class="p-4">
-              <!-- Order Delivery Status Select -->
-              <select class="del-select px-2.5 py-1 text-[10px] rounded border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-950 font-bold focus:outline-none">
-                <option value="Processing" ${order.orderStatus === 'Processing' ? 'selected' : ''}>Processing</option>
-                <option value="Shipped" ${order.orderStatus === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                <option value="Delivered" ${order.orderStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                <option value="Cancelled" ${order.orderStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-              </select>
-            </td>
-            <td class="p-4 pr-6 text-right">
-              <button class="save-status-btn px-2.5 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[10px]" data-id="${order._id}">Update</button>
-            </td>
-          `;
-
-          // Update action triggers
-          tr.querySelector('.save-status-btn').addEventListener('click', async (e) => {
-            const btn = e.currentTarget;
-            btn.disabled = true;
-            btn.textContent = 'Saving...';
-
-            const payStatus = tr.querySelector('.pay-select').value;
-            const delStatus = tr.querySelector('.del-select').value;
-
-            try {
-              await clovasApi.adminUpdateOrderStatus(order._id, {
-                paymentStatus: payStatus,
-                orderStatus: delStatus
-              });
-              showToast(`Order status updated successfully!`);
-              loadAdminOrders();
-            } catch (err) {
-              showToast(err.message, 'error');
-              btn.disabled = false;
-              btn.textContent = 'Update';
-            }
-          });
-
-          rowsContainer.appendChild(tr);
-        });
+        allOrders = orders;
+        renderCustomerListView();
+      })
+      .catch(err => {
+        contentContainer.innerHTML = `<div class="p-8 text-center text-red-500">Error loading orders: ${err.message}</div>`;
       });
+  };
+
+  const renderCustomerListView = () => {
+    const customerGroups = {};
+
+    allOrders.forEach(order => {
+      const userId = order.user ? (order.user._id || order.user) : order.shippingAddress.name;
+      if (!customerGroups[userId]) {
+        customerGroups[userId] = {
+          id: userId,
+          name: order.shippingAddress.name,
+          email: order.user ? order.user.email : 'Guest User',
+          phone: order.shippingAddress.phone || 'N/A',
+          orders: [],
+          totalSpent: 0
+        };
+      }
+      customerGroups[userId].orders.push(order);
+      customerGroups[userId].totalSpent += order.totalAmount;
+    });
+
+    const groupsArray = Object.values(customerGroups);
+
+    if (groupsArray.length === 0) {
+      contentContainer.innerHTML = '<div class="p-8 text-center text-slate-500">No orders recorded yet.</div>';
+      return;
+    }
+
+    let tbodyContent = '';
+    groupsArray.forEach(group => {
+      tbodyContent += `
+        <tr class="border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors">
+          <td class="p-4 pl-6 font-bold text-slate-800 dark:text-white">${group.name}</td>
+          <td class="p-4 text-slate-500">${group.email}</td>
+          <td class="p-4 text-slate-500">${group.phone}</td>
+          <td class="p-4 text-center text-slate-700 dark:text-slate-300 font-bold">${group.orders.length}</td>
+          <td class="p-4 text-center font-bold text-slate-800 dark:text-white">${group.totalSpent} BDT</td>
+          <td class="p-4 pr-6 text-right">
+            <button class="view-customer-orders-btn px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[10px] font-bold shadow transition-colors" data-id="${group.id}">
+              View Orders
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    contentContainer.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs font-medium border-collapse">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-850">
+              <th class="p-4 pl-6">Customer Profile</th>
+              <th class="p-4">Email</th>
+              <th class="p-4">Contact Phone</th>
+              <th class="p-4 text-center">Orders Count</th>
+              <th class="p-4 text-center">Total Spent</th>
+              <th class="p-4 pr-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-850">
+            ${tbodyContent}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    contentContainer.querySelectorAll('.view-customer-orders-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        renderCustomerOrdersDetailView(customerGroups[id]);
+      });
+    });
+  };
+
+  const renderCustomerOrdersDetailView = (group) => {
+    let tbodyContent = '';
+    group.orders.forEach(order => {
+      const dateStr = new Date(order.createdAt).toLocaleDateString();
+      tbodyContent += `
+        <tr class="border-b border-slate-100 dark:border-slate-850 hover:bg-slate-50/80 dark:hover:bg-slate-900/40 text-xs font-semibold transition-colors" data-order-id="${order._id}">
+          <td class="p-4 pl-6 font-bold text-slate-400">${order.transactionId}</td>
+          <td class="p-4 text-slate-500">${dateStr}</td>
+          <td class="p-4 text-slate-500 max-w-xs truncate">${order.items.map(i => `${i.title} x${i.quantity}`).join(', ')}</td>
+          <td class="p-4 font-bold text-slate-800 dark:text-white">${order.totalAmount} BDT</td>
+          <td class="p-4">
+            <select class="pay-select px-2.5 py-1 text-[10px] rounded border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-950 font-bold focus:outline-none">
+              <option value="Pending" ${order.paymentStatus === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Paid" ${order.paymentStatus === 'Paid' ? 'selected' : ''}>Paid</option>
+              <option value="Failed" ${order.paymentStatus === 'Failed' ? 'selected' : ''}>Failed</option>
+              <option value="Cancelled" ${order.paymentStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+          <td class="p-4">
+            <select class="del-select px-2.5 py-1 text-[10px] rounded border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-950 font-bold focus:outline-none">
+              <option value="Processing" ${order.orderStatus === 'Processing' ? 'selected' : ''}>Processing</option>
+              <option value="Shipped" ${order.orderStatus === 'Shipped' ? 'selected' : ''}>Shipped</option>
+              <option value="Delivered" ${order.orderStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="Cancelled" ${order.orderStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+          <td class="p-4 pr-6 text-right">
+            <button class="save-status-btn px-2.5 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[10px]" data-id="${order._id}">Update</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    contentContainer.innerHTML = `
+      <div class="p-6 border-b border-slate-150 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/60">
+        <div>
+          <h3 class="font-serif text-base font-bold text-slate-800 dark:text-white">${group.name}</h3>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Email: ${group.email} | Phone: ${group.phone}</p>
+        </div>
+        <button id="back-to-customers-btn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition-colors">
+          ← Back to Customers
+        </button>
+      </div>
+      <div class="overflow-x-auto min-h-[350px]">
+        <table class="w-full text-left text-xs font-medium border-collapse">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-850">
+              <th class="p-4 pl-6">Txn ID</th>
+              <th class="p-4">Date</th>
+              <th class="p-4">Items Summary</th>
+              <th class="p-4">Total Amount</th>
+              <th class="p-4">Payment</th>
+              <th class="p-4">Delivery Status</th>
+              <th class="p-4 pr-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-850">
+            ${tbodyContent}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    if (window.initCustomSelects) {
+      window.initCustomSelects();
+    }
+
+    const backBtn = document.getElementById('back-to-customers-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', renderCustomerListView);
+    }
+
+    contentContainer.querySelectorAll('.save-status-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const actionBtn = e.currentTarget;
+        const orderId = actionBtn.getAttribute('data-id');
+        const tr = contentContainer.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (!tr) return;
+
+        actionBtn.disabled = true;
+        actionBtn.textContent = 'Saving...';
+
+        const payStatus = tr.querySelector('.pay-select').value;
+        const delStatus = tr.querySelector('.del-select').value;
+
+        try {
+          const updated = await clovasApi.adminUpdateOrderStatus(orderId, {
+            paymentStatus: payStatus,
+            orderStatus: delStatus
+          });
+          showToast(`Order status updated successfully!`);
+          
+          const foundOrder = allOrders.find(o => o._id === orderId);
+          if (foundOrder) {
+            foundOrder.paymentStatus = updated.paymentStatus;
+            foundOrder.orderStatus = updated.orderStatus;
+          }
+          
+          actionBtn.disabled = false;
+          actionBtn.textContent = 'Update';
+        } catch (err) {
+          showToast(err.message, 'error');
+          actionBtn.disabled = false;
+          actionBtn.textContent = 'Update';
+        }
+      });
+    });
   };
 
   loadAdminOrders();

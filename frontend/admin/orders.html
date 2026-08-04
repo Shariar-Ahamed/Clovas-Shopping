@@ -100,27 +100,10 @@
       </div>
     </header>
 
-    <!-- Orders Table Grid -->
-    <section class="glass rounded-3xl border border-slate-100 dark:border-slate-800/40 overflow-hidden animate-fade-in">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs font-medium border-collapse">
-          <thead>
-            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-850">
-              <th class="p-4 pl-6">Txn ID / Customer</th>
-              <th class="p-4">Date</th>
-              <th class="p-4">Items Summary</th>
-              <th class="p-4">Total Amount</th>
-              <th class="p-4">Payment</th>
-              <th class="p-4">Delivery Status</th>
-              <th class="p-4 pr-6 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="admin-orders-rows" class="divide-y divide-slate-100 dark:divide-slate-850">
-            <!-- Loaded dynamically by JS -->
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <!-- Orders Content Container (Swappable Views) -->
+    <div id="orders-content-container" class="glass rounded-3xl border border-slate-100 dark:border-slate-800/40 overflow-hidden animate-fade-in">
+      <!-- Loaded dynamically by JS -->
+    </div>
 
   </main>
 
