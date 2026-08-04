@@ -181,4 +181,40 @@ router.put('/:id/status', protect, adminOnly, async (req, res) => {
   }
 });
 
+// @desc    Cancel and delete an unpaid order if payment gateway redirect fails
+// @route   DELETE /api/orders/:id
+// @access  Private
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Check ownership
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to delete this order' });
+    }
+
+    // Only allow deletion if the order is still unpaid (Pending)
+    if (order.paymentStatus !== 'Pending') {
+      return res.status(400).json({ message: 'Cannot cancel an order that has been processed/paid' });
+    }
+
+    // Restore stock
+    for (const item of order.items) {
+      await Product.findByIdAndUpdate(item.product, {
+        $inc: { stock: item.quantity }
+      });
+    }
+
+    await Order.findByIdAndDelete(req.params.id);
+
+    res.json({ message: 'Order cancelled and deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

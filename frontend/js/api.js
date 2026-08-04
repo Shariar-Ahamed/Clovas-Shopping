@@ -606,6 +606,13 @@ const clovasApi = {
     return mockOrders.find(o => o._id === id) || mockOrders[0];
   }),
 
+  deleteOrder: (id) => requestWithMock(`/orders/${id}`, { method: 'DELETE' }, () => {
+    const mockOrders = JSON.parse(localStorage.getItem('mock_orders') || '[]');
+    const filtered = mockOrders.filter(o => o._id !== id);
+    localStorage.setItem('mock_orders', JSON.stringify(filtered));
+    return { message: 'Order deleted successfully' };
+  }),
+
   // Payments
   initiatePayment: (orderId) => requestWithMock(`/payments/initiate/${orderId}`, { method: 'POST' }, () => {
     const mockOrders = JSON.parse(localStorage.getItem('mock_orders') || '[]');

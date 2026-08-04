@@ -183,17 +183,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       const orderResult = await clovasApi.createOrder(orderPayload);
-      clearCart();
-      localStorage.removeItem('checkout_totals');
 
       if (activePaymentMethod === 'SSLCommerz') {
         showToast('Initiating secure payment redirect...');
-        const paymentResult = await clovasApi.initiatePayment(orderResult._id);
-        
-        // Redirect to SSLCommerz gateway URL
-        window.location.href = paymentResult.GatewayPageURL;
+        try {
+          const paymentResult = await clovasApi.initiatePayment(orderResult._id);
+          
+          // Clear cart only after payment is successfully initiated
+          clearCart();
+          localStorage.removeItem('checkout_totals');
+          
+          // Redirect to SSLCommerz gateway URL
+          window.location.href = paymentResult.GatewayPageURL;
+        } catch (paymentErr) {
+          // If payment initiation fails, roll back/delete the created order
+          console.error('Payment initiation failed, rolling back order:', paymentErr);
+          try {
+            await clovasApi.deleteOrder(orderResult._id);
+          } catch (rollbackErr) {
+            console.error('Failed to roll back order:', rollbackErr);
+          }
+          throw new Error(paymentErr.message || 'Payment initiation failed. Please try again.');
+        }
       } else {
         // COD path
+        clearCart();
+        localStorage.removeItem('checkout_totals');
         showToast('Order confirmed successfully!');
         setTimeout(() => {
           window.location.href = 'dashboard.html?status=success&method=cod&tab=orders';
